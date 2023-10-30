@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CG2": {
+      "commandName": "Project",
+      "workingDirectory": "..\\CG2\\"
+    }
+  }
+}

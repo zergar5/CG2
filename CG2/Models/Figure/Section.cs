@@ -1,0 +1,53 @@
+﻿using System.Collections.Generic;
+using System.Numerics;
+using System.Transactions;
+using CG2.Extensions;
+using SharpGL.SceneGraph;
+
+namespace CG2.Models.Figure;
+
+public class Section
+{
+    private readonly Vector3[] _vertices3D;
+
+    public Section(Vector2[] vertices2D)
+    {
+        _vertices3D = new Vector3[vertices2D.Length];
+
+        for (var i = 0; i < vertices2D.Length; i++)
+        {
+            var vertex = vertices2D[i];
+            _vertices3D[i] = new Vector3(vertex.X, vertex.Y, 0);
+        }
+    }
+
+    public Vector3 this[int index]
+    {
+        get => _vertices3D[index];
+        set => _vertices3D[index] = value;
+    }
+
+    public int Count => _vertices3D.Length;
+
+    public void Translate(Vector3 translation)
+    {
+        for (var i = 0; i < _vertices3D.Length; i++)
+        {
+            _vertices3D[i].X += translation.X;
+            _vertices3D[i].Y += translation.Y;
+            _vertices3D[i].Z += translation.Z;
+        }
+    }
+
+    public void Scale(float scaleX, float scaleY, float scaleZ)
+    {
+        for (var i = 0; i < _vertices3D.Length; i++)
+        {
+            _vertices3D[i].X *= scaleX;
+            _vertices3D[i].Y *= scaleY;
+            _vertices3D[i].Z *= scaleZ;
+        }
+    }
+
+    public IEnumerator<Vector3> GetEnumerator() => ((IEnumerable<Vector3>)_vertices3D).GetEnumerator();
+}
