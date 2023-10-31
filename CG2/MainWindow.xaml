@@ -185,8 +185,9 @@
                             />
                             <RadioButton
                                             GroupName="Проекция"
-                                            Width="30"
                                             Grid.Column="2"
+                                            Margin="40, 5, 0, 0"
+                                            Width="20"                                            
                             />
                             <Label 
                                 Content="Перспективная"
@@ -195,10 +196,11 @@
                                 Style="{StaticResource MaterialDesignLabel}"
                             />
                             <RadioButton
-                                            GroupName="Проекция"
-                                            Width="30"
+                                            GroupName="Проекция"                                            
                                             Grid.Row="1"
                                             Grid.Column="2"
+                                            Margin="40, 5, 0, 0"
+                                            Width="20"
                             />
                             
                         </Grid>
