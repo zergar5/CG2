@@ -57,9 +57,16 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    <TextBlock  x:Name="FileNameText"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Text="Название файла"                                
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                    />
                     <Button x:Name="OpenFileDialogButton"
                             Click="OpenFileDialogButton_Click"
-                            Content="Выбрать файл"
+                            Content="Загрузить файл"
                             Grid.Row="0"
                             Grid.Column="1"
                             Width="125"
