@@ -79,9 +79,10 @@
                             Grid.Column="1"
                             Grid.Row="0"
                     />
-                            <CheckBox
-                            Grid.Column="0"
-                            Grid.Row="0"
+                            <CheckBox   x:Name="BufferStockCheckBox"
+                                        Checked="BufferStockCheckBox_Checked"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
                     >
 
                             </CheckBox>
@@ -90,23 +91,21 @@
                             Grid.Column="1"
                             Grid.Row="1"
                     />
-                            <CheckBox
-                        Grid.Column="0"
-                        Grid.Row="1"
-                    >
-
-                            </CheckBox>
+                            <CheckBox   x:Name="DoubleBufferingCheckBox"
+                                        Checked="DoubleBufferingCheckBox_Checked"
+                                        Grid.Column="0"
+                                        Grid.Row="1"
+                            />
                             <Label
                             Content="освещение и материалы"
                             Grid.Column="1"
                             Grid.Row="2"
                     />
-                            <CheckBox
-                        Grid.Column="0"
-                        Grid.Row="2"
-                    >
-
-                            </CheckBox>
+                            <CheckBox   x:Name="LightingMaterialsCheckBox"
+                                        Checked="LightingMaterialsCheckBox_Checked"
+                                        Grid.Column="0"
+                                        Grid.Row="2"
+                            />
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Показать"
@@ -127,36 +126,40 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label
-                            Content="каркас объекта"
-                            Grid.Column="1"
-                            Grid.Row="0"
-                            Style="{StaticResource MaterialDesignLabel}"
-                        />
+                                    Content="каркас объекта"
+                                    Grid.Column="1"
+                                    Grid.Row="0"
+                                    Style="{StaticResource MaterialDesignLabel}"
+                            />
                             <CheckBox
-                            Grid.Column="0"
-                            Grid.Row="0"
-                        >
+                                        x:Name="ObjectFrameCheckBox"
+                                        Checked="ObjectFrameCheckBox_Checked"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
+                            />
 
-                            </CheckBox>
+
                             <Label
-                            Content="нормали"
-                            Grid.Column="1"
-                            Grid.Row="1"
-                            Style="{StaticResource MaterialDesignLabel}"
-                        />
-                            <CheckBox
-                            Grid.Column="0"
-                            Grid.Row="1"
-                        />
+                                    Content="нормали"
+                                    Grid.Column="1"
+                                    Grid.Row="1"
+                                    Style="{StaticResource MaterialDesignLabel}"
+                            />
+                            <CheckBox x:Name="NormalsCheckBox"
+                                      Checked="NormalsCheckBox_Checked"
+                                      Grid.Column="0"
+                                      Grid.Row="1"
+                            />
                             <Label
                             Content="текстуры"
                             Grid.Column="1"
                             Grid.Row="2"
                             Style="{StaticResource MaterialDesignLabel}"
                         />
-                            <CheckBox
-                            Grid.Column="0"
-                            Grid.Row="2"
+                            <CheckBox   x:Name="TexturesCheckBox"
+                                        Checked="TexturesCheckBox_Checked"
+                                        Grid.Column="0"
+                                        Grid.Row="2"
                         >
 
                             </CheckBox>
@@ -183,7 +186,8 @@
                                 Grid.Column="0"
                                 Style="{StaticResource MaterialDesignLabel}"
                             />
-                            <RadioButton
+                            <RadioButton    x:Name="OrthographicProjectionCheckBox"
+                                            Checked="OrthographicProjectionCheckBox_Checked"
                                             GroupName="Проекция"
                                             Grid.Column="2"
                                             Margin="40, 5, 0, 0"
@@ -195,7 +199,8 @@
                                 Grid.Column="0"
                                 Style="{StaticResource MaterialDesignLabel}"
                             />
-                            <RadioButton
+                            <RadioButton    x:Name="PerspectiveProjectionCheckBox"
+                                            Checked="PerspectiveProjectionCheckBox_Checked"                                
                                             GroupName="Проекция"                                            
                                             Grid.Row="1"
                                             Grid.Column="2"
@@ -227,7 +232,8 @@
                                     VerticalAlignment="Top"  
                                     Style="{StaticResource MaterialDesignLabel}"
                         />
-                            <ToggleButton
+                            <ToggleButton   x:Name="NormalsSmoothingToggleButton"
+                                            Checked="NormalsSmoothingToggleButton_Checked"
                                             Grid.Row="0"
                                             Grid.Column="1"
                                             Margin="0, 0, 5, 5"
