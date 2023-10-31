@@ -139,6 +139,8 @@ public class FigureBuilder
         var newY = Vector3.Normalize(Vector3.Cross(direction, crossVector));
         var newZ = Vector3.Normalize(direction);
 
+        section.Scale(scales);
+
         for (var i = 0; i < section.Count; i++)
         {
             var vertex = section[i];
@@ -155,7 +157,6 @@ public class FigureBuilder
         }
 
         section.Translate(point);
-        //section.Scale(scales);
 
         return section;
     }
@@ -168,7 +169,9 @@ public class FigureBuilder
         var newX = Vector3.Normalize(crossVector);
         var newZ = Vector3.Normalize((direction + nextDirection) / 2);
         var newY = Vector3.Normalize(Vector3.Cross(newZ, crossVector));
-        
+
+        section.Scale(scales);
+
         for (var i = 0; i < section.Count; i++)
         {
             var vertex = section[i];
@@ -185,7 +188,7 @@ public class FigureBuilder
         }
 
         section.Translate(point);
-        //section.Scale(scales);
+        
 
         return section;
     }
@@ -199,6 +202,8 @@ public class FigureBuilder
         var newY = Vector3.Normalize(Vector3.Cross(direction, crossVector));
         var newZ = Vector3.Normalize(direction);
 
+        section.Scale(scales);
+
         for (var i = 0; i < section.Count; i++)
         {
             var vertex = section[i];
@@ -215,7 +220,6 @@ public class FigureBuilder
         }
 
         section.Translate(point);
-        //section.Scale(scales);
 
         return section;
     }

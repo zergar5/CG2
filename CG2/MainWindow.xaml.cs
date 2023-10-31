@@ -47,7 +47,7 @@ public partial class MainWindow : Window
         };
         _scales = new Vector3[]
         {
-            new(1, 1, 1), new(0.25f, 0.25f, 0.25f), new(2f, 2f, 2f)
+            new(1, 1, 1), new(0.2f, 0.2f, 0.2f), new(1f, 1f, 1f)
         };
         GlWindow.FrameRate = 60;
         _camera = new Camera();
@@ -69,8 +69,8 @@ public partial class MainWindow : Window
 
         _gl.End();
 
-        _figure.Draw(_gl, false, false);
-        _figure.DrawNormals(_gl, false);
+        _figure.Draw(_gl, false, true);
+        _figure.DrawNormals(_gl, true);
 
         _gl.Flush();
     }
@@ -84,8 +84,8 @@ public partial class MainWindow : Window
 
         _figure = _figureBuilder
             .CalculateSections(_section, _path, _scales)
-            .CalculateNormals(false)
-            .Build();
+            .CalculateNormals(true)
+            .BuildWithSmooth();
     }
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
@@ -96,9 +96,10 @@ public partial class MainWindow : Window
         _camera.Rotate(_previousPosition, _previousPosition);
         _camera.ChangeCamera(_gl);
 
-        SetLight(1);
+        //SetLight(2);
+        SetLight(3);
         SetMaterial(1);
-        SetTexture();
+        //SetTexture();
 
         OpenGLDraw(sender, args);
     }
@@ -181,14 +182,14 @@ public partial class MainWindow : Window
     private void SetDoubleBuffer()
     {
         //_gl.Disable(OpenGL.GL_DOUBLEBUFFER);
-        _gl.Enable(OpenGL.GL_DOUBLEBUFFER);
+        //_gl.Enable(OpenGL.GL_DOUBLEBUFFER);
     }
 
     private void SetLight(int number)
     {
-        //_gl.Enable(OpenGL.GL_LIGHTING);
+        _gl.Enable(OpenGL.GL_LIGHTING);
         //_gl.Enable(OpenGL.GL_LIGHT0);
-        //_gl.LightModel(OpenGL.GL_LIGHT_MODEL_TWO_SIDE, OpenGL.GL_FALSE);
+        _gl.LightModel(OpenGL.GL_LIGHT_MODEL_TWO_SIDE, OpenGL.GL_FALSE);
         //_gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, new[] { 4f, -4f, 0f, 0f });
 
         if (number == 0)
@@ -200,20 +201,23 @@ public partial class MainWindow : Window
             _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new[] { 0.1f, 0.1f, 0.1f, 1f });
             _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, new[] { 0f, 0f, 0f, 1f });
             _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, new[] { 0f, 0f, 0f, 1f });
+            _gl.Enable(OpenGL.GL_LIGHT0);
         }
         else if(number == 2)
         {
             _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
             _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
             _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new[]{0f, 0f, 1f, 0f});
+            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new[]{-0.2f, -1f, -0.3f, 0f});
+            _gl.Enable(OpenGL.GL_LIGHT1);
         }
         else if(number == 3)
         {
             _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
             _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
             _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1.2f, 1f, 1f });
+            _gl.Enable(OpenGL.GL_LIGHT2);
         }
         else if(number == 4)
         {
@@ -224,6 +228,7 @@ public partial class MainWindow : Window
             _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_EXPONENT, 30f);
             _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_CUTOFF, 20f);
             _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_DIRECTION, new[] { -1f, -1f, -1f, 0f });
+            _gl.Enable(OpenGL.GL_LIGHT3);
         }
         else if(number == 5)
         {
@@ -234,6 +239,7 @@ public partial class MainWindow : Window
             _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_CONSTANT_ATTENUATION, 0f);
             _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_LINEAR_ATTENUATION, 5e-3f);
             _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_QUADRATIC_ATTENUATION, 0f);
+            _gl.Enable(OpenGL.GL_LIGHT4);
         }
     }
 
@@ -245,7 +251,7 @@ public partial class MainWindow : Window
         }
         else if (number == 1)
         {
-            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new []{0.0215f, 0.1745f, 0.0215f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0215f, 0.1745f, 0.0215f });
             _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.0756f, 0.6142f, 0.0756f });
             _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6330f, 0.7278f, 0.6330f });
             _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.6f);

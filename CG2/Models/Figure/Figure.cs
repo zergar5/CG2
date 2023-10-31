@@ -272,7 +272,7 @@ public class Figure
 
     private void DrawEnd(OpenGL gl, bool texture)
     {
-        gl.Normal(-_normals[^1][0]);
+        gl.Normal(_normals[^1][0]);
         gl.Begin(OpenGL.GL_POLYGON);
 
         foreach (var vertex in _sections[^1])
@@ -367,7 +367,7 @@ public class Figure
 
         for (var i = 0; i < _sections[^1].Count; i++)
         {
-            gl.Normal(-_normals[^1][i]);
+            gl.Normal(_normals[^1][i]);
 
             var vertex = _sections[^1][i];
 
