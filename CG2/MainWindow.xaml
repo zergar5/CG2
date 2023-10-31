@@ -9,18 +9,16 @@
         KeyDown="GlWindowOnKeyDown"
         Title="Компьютерная графика"
         Padding="0"
-        Margin="0"        
-        MinHeight="800"       
-        MinWidth="800"       
+        Margin="0"      
 >
 
     <Grid Background="white" Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="GlWindow"
                                OpenGLDraw="OpenGLDraw"
@@ -29,13 +27,229 @@
                                KeyDown="GlWindowOnKeyDown"
                                MouseMove="GlWindow_OnMouseMove"
                                DrawFPS="True"
-                               MinHeight="560"
-                               MinWidth="500"
+                               Width="1000"
+                               Height="600"
                                Padding="0"
                                Margin="0"
                                Grid.Column="0"
                                BorderBrush="Gray"
                                BorderThickness="0,0,2,0"
         />
+        <StackPanel
+            Grid.Column="1"
+        >
+            <Border
+                Padding="10, 10, 0, 0"
+                Margin="0"
+                Width="Auto"
+                Background="white"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+            >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Выберете режимы"
+                              Grid.Column="0"
+                              Grid.Row="1"
+                              Height="Auto"
+                              Margin="0, 0, 10, 10"
+                              Style="{StaticResource MaterialDesignCardGroupBox}"
+                    >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label
+                            Content="буфер глубины"
+                            Grid.Column="1"
+                            Grid.Row="0"
+                    />
+                            <CheckBox
+                            Grid.Column="0"
+                            Grid.Row="0"
+                    >
+
+                            </CheckBox>
+                            <Label
+                            Content="двойная буферизация"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                    />
+                            <CheckBox
+                        Grid.Column="0"
+                        Grid.Row="1"
+                    >
+
+                            </CheckBox>
+                            <Label
+                            Content="освещение и материалы"
+                            Grid.Column="1"
+                            Grid.Row="2"
+                    />
+                            <CheckBox
+                        Grid.Column="0"
+                        Grid.Row="2"
+                    >
+
+                            </CheckBox>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Показать"
+                              Grid.Column="1"
+                              Grid.Row="1"
+                              Height="Auto"
+                              Margin="0, 0, 10, 10"
+                              Style="{StaticResource MaterialDesignCardGroupBox}"
+                    >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label
+                            Content="каркас объекта"
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            Style="{StaticResource MaterialDesignLabel}"
+                        />
+                            <CheckBox
+                            Grid.Column="0"
+                            Grid.Row="0"
+                        >
+
+                            </CheckBox>
+                            <Label
+                            Content="нормали"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            Style="{StaticResource MaterialDesignLabel}"
+                        />
+                            <CheckBox
+                            Grid.Column="0"
+                            Grid.Row="1"
+                        />
+                            <Label
+                            Content="текстуры"
+                            Grid.Column="1"
+                            Grid.Row="2"
+                            Style="{StaticResource MaterialDesignLabel}"
+                        />
+                            <CheckBox
+                            Grid.Column="0"
+                            Grid.Row="2"
+                        >
+
+                            </CheckBox>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox   Header="Выберете проекцию"
+                                Grid.Column="0"
+                                Grid.Row="2"                                
+                                Margin="0, 0, 10, 10"
+                                Style="{StaticResource MaterialDesignCardGroupBox}"
+                    >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>                            
+                            <Label 
+                                Content="Ортографическая"
+                                Grid.Column="0"
+                                Style="{StaticResource MaterialDesignLabel}"
+                            />
+                            <RadioButton
+                                            GroupName="Проекция"
+                                            Width="30"
+                                            Grid.Column="2"
+                            />
+                            <Label 
+                                Content="Перспективная"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource MaterialDesignLabel}"
+                            />
+                            <RadioButton
+                                            GroupName="Проекция"
+                                            Width="30"
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                            />
+                            
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox   Header="Другие опции"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="0, 0, 10, 10"
+                                Style="{StaticResource MaterialDesignCardGroupBox}"
+                    >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label  Content="Сглаживание нормалей"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0, 0, 5, 5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"  
+                                    Style="{StaticResource MaterialDesignLabel}"
+                        />
+                            <ToggleButton
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Margin="0, 0, 5, 5"
+                                            Width="30"
+                        />
+                        </Grid>
+                        
+                    </GroupBox>
+                    <Grid
+                        Grid.Column="1"
+                        Grid.Row="1"
+                    >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>                       
+                        
+                    </Grid>
+                </Grid>                    
+            </Border>
+        </StackPanel>
     </Grid>
 </Window>
+   
