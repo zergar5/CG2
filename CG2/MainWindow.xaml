@@ -57,6 +57,15 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    <Button x:Name="OpenFileDialogButton"
+                            Click="OpenFileDialogButton_Click"
+                            Content="Выбрать файл"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Width="125"
+                            Margin="0, 0, 10, 10"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                    />
                     <GroupBox Header="Выберете режимы"
                               Grid.Column="0"
                               Grid.Row="1"
