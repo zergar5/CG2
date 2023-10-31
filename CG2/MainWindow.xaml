@@ -81,6 +81,7 @@
                     />
                             <CheckBox   x:Name="BufferStockCheckBox"
                                         Checked="BufferStockCheckBox_Checked"
+                                        Unchecked="BufferStockCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="0"
                     >
@@ -93,6 +94,7 @@
                     />
                             <CheckBox   x:Name="DoubleBufferingCheckBox"
                                         Checked="DoubleBufferingCheckBox_Checked"
+                                        Unchecked="DoubleBufferingCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="1"
                             />
@@ -103,6 +105,7 @@
                     />
                             <CheckBox   x:Name="LightingMaterialsCheckBox"
                                         Checked="LightingMaterialsCheckBox_Checked"
+                                        Unchecked="LightingMaterialsCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="2"
                             />
@@ -131,9 +134,9 @@
                                     Grid.Row="0"
                                     Style="{StaticResource MaterialDesignLabel}"
                             />
-                            <CheckBox
-                                        x:Name="ObjectFrameCheckBox"
+                            <CheckBox   x:Name="ObjectFrameCheckBox"
                                         Checked="ObjectFrameCheckBox_Checked"
+                                        Unchecked="ObjectFrameCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="0"
                             />
@@ -147,6 +150,7 @@
                             />
                             <CheckBox x:Name="NormalsCheckBox"
                                       Checked="NormalsCheckBox_Checked"
+                                      Unchecked="NormalsCheckBox_Unchecked"
                                       Grid.Column="0"
                                       Grid.Row="1"
                             />
@@ -158,11 +162,10 @@
                         />
                             <CheckBox   x:Name="TexturesCheckBox"
                                         Checked="TexturesCheckBox_Checked"
+                                        Unchecked="TexturesCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="2"
-                        >
-
-                            </CheckBox>
+                            />
                         </Grid>
                     </GroupBox>
                     <GroupBox   Header="Выберете проекцию"
@@ -234,6 +237,7 @@
                         />
                             <ToggleButton   x:Name="NormalsSmoothingToggleButton"
                                             Checked="NormalsSmoothingToggleButton_Checked"
+                                            Unchecked="NormalsSmoothingToggleButton_Unchecked"
                                             Grid.Row="0"
                                             Grid.Column="1"
                                             Margin="0, 0, 5, 5"

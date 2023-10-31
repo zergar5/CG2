@@ -53,5 +53,40 @@ namespace CG2
         {
 
         }
+
+        private void BufferStockCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DoubleBufferingCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LightingMaterialsCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ObjectFrameCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NormalsCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TexturesCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NormalsSmoothingToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
