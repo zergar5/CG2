@@ -23,5 +23,35 @@ namespace CG2
         {
 
         }
+
+        private void ObjectFrameCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NormalsCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TexturesCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OrthographicProjectionCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PerspectiveProjectionCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NormalsSmoothingToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
