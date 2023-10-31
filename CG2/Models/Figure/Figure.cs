@@ -1,69 +1,50 @@
 ﻿using System;
 using System.Numerics;
+using System.Reflection;
 using CG2.Extensions;
 using SharpGL;
 using SharpGL.SceneGraph;
+using SharpGL.SceneGraph.Assets;
 
 namespace CG2.Models.Figure;
 
 public class Figure
 {
     private readonly Section[] _sections;
-    private Vector3[][] _normals;
+    private readonly Vector3[][] _normals;
+    private readonly Vector3[] _path;
 
-    public Figure(Section[] sections)
+    public Figure(Section[] sections, Vector3[][] normals, Vector3[] path)
     {
         _sections = sections;
-        _normals = new Vector3[_sections.Length + 1][];
+        _normals = normals;
+        _path = path;
     }
 
-    public void CalculateNormals()
+    public void Draw(OpenGL gl, bool texture, bool smooth)
     {
-        _normals[0] = new Vector3[1];
-        var vector01 = _sections[0][1] - _sections[0][0];
-        var vector02 = _sections[0][2] - _sections[0][0];
-        var vector = Vector3.Normalize(Vector3.Cross(vector01, vector02));
-
-        _normals[0][0] = vector;
-
-        for (var i = 1; i < _sections.Length; i++)
+        if (smooth)
         {
-            _normals[i] = new Vector3[_sections[i].Count];
+            DrawBeginningSmooth(gl, texture);
 
-            for (var j = 0; j < _sections[i].Count - 1; j++)
+            for (var i = 1; i < _sections.Length - 1; i++)
             {
-                vector01 = _sections[i][j] - _sections[i - 1][j];
-                vector02 = _sections[i - 1][j + 1] - _sections[i - 1][j];
-                vector = Vector3.Normalize(Vector3.Cross(vector01, vector02));
-
-                _normals[i][j] = vector;
+                DrawNodeSmooth(gl, _sections[i - 1], _sections[i], _normals[i], texture);
             }
 
-            vector01 = _sections[i][^1] - _sections[i - 1][^1];
-            vector02 = _sections[i - 1][0] - _sections[i - 1][^1];
-            vector = Vector3.Normalize(Vector3.Cross(vector01, vector02));
-
-            _normals[i][^1] = vector;
+            DrawEndSmooth(gl, texture);
         }
-
-        _normals[^1] = new Vector3[1];
-        vector01 = _sections[^1][1] - _sections[^1][0];
-        vector02 = _sections[^1][2] - _sections[^1][0];
-        vector = -Vector3.Normalize(Vector3.Cross(vector01, vector02));
-
-        _normals[^1][0] = vector;
-    }
-
-    public void Draw(OpenGL gl)
-    {
-        DrawBeginning(gl);
-
-        for (var i = 1; i < _sections.Length; i++)
+        else
         {
-            DrawNode(gl, _sections[i - 1], _sections[i]);
-        }
+            DrawBeginning(gl, texture);
 
-        DrawEnd(gl);
+            for (var i = 1; i < _sections.Length; i++)
+            {
+                DrawNode(gl, _sections[i - 1], _sections[i], _normals[i], texture);
+            }
+
+            DrawEnd(gl, texture);
+        }
     }
 
     public void DrawCarcass(OpenGL gl)
@@ -78,89 +59,264 @@ public class Figure
         DrawEndCarcass(gl);
     }
 
-    public void DrawNormals(OpenGL gl)
+    public void DrawNormals(OpenGL gl, bool smooth)
     {
-        gl.Begin(OpenGL.GL_POLYGO);
-
-        foreach (var vertex in _sections[0])
+        if (smooth)
         {
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(vertex);
+            gl.Begin(OpenGL.GL_LINES);
 
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(vertex + _normals[0][0]);
-        }
-
-        gl.End();
-
-        gl.Begin(OpenGL.GL_LINES);
-
-        for (var i = 1; i < _sections.Length; i++)
-        {
-            var centerX = (_sections[i - 1][^1].X + _sections[i][^1].X +
-                           _sections[i - 1][0].X + _sections[i][0].X) / 4;
-            var centerY = (_sections[i - 1][^1].Y + _sections[i][^1].Y +
-                           _sections[i - 1][0].Y + _sections[i][0].Y) / 4;
-            var centerZ = (_sections[i - 1][^1].Z + _sections[i][^1].Z +
-                           _sections[i - 1][0].Z + _sections[i][0].Z) / 4;
-
-            var vertex = new Vector3(centerX, centerY, centerZ);
-
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(vertex);
-
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(vertex + _normals[i][^1]);
-
-            for (var j = 0; j < _sections[i].Count - 1; j++)
+            for (var i = 0; i < _sections.Length; i++)
             {
-                centerX = (_sections[i - 1][j].X + _sections[i][j].X + 
-                               _sections[i - 1][j + 1].X + _sections[i][j + 1].X) / 4;
-                centerY = (_sections[i - 1][j].Y + _sections[i][j].Y + 
-                               _sections[i - 1][j + 1].Y + _sections[i][j + 1].Y) / 4;
-                centerZ = (_sections[i - 1][j].Z + _sections[i][j].Z +
-                               _sections[i - 1][j + 1].Z + _sections[i][j + 1].Z) / 4;
+                for (var j = 0; j < _sections[i].Count; j++)
+                {
+                    gl.Color(1f, 1f, 1f);
+                    gl.Vertex(_sections[i][j]);
 
-                vertex = new Vector3(centerX, centerY, centerZ);
-
-                gl.Color(1f, 0f, 0f);
-                gl.Vertex(vertex);
-
-                gl.Color(1f, 0f, 0f);
-                gl.Vertex(vertex + _normals[i][j]);
+                    gl.Color(1f, 1f, 1f);
+                    gl.Vertex(_sections[i][j] + _normals[i][j]);
+                }
             }
 
             gl.End();
         }
-
-        gl.Begin(OpenGL.GL_LINES);
-
-        foreach (var vertex in _sections[^1])
+        else
         {
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(vertex);
+            gl.Begin(OpenGL.GL_LINES);
 
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(vertex + _normals[^1][0]);
+            gl.Color(1f, 1f, 1f);
+            gl.Vertex(_path[0]);
+
+            gl.Color(1f, 1f, 1f);
+            gl.Vertex(_path[0] + _normals[0][0]);
+
+            for (var i = 1; i < _sections.Length; i++)
+            {
+                var centerX = (_path[i - 1].X + _path[i].X) / 2;
+                var centerY = (_path[i - 1].Y + _path[i].Y) / 2;
+                var centerZ = (_path[i - 1].Z + _path[i].Z) / 2;
+
+                var vertex = new Vector3(centerX, centerY, centerZ);
+
+                for (var j = 0; j < _sections[i].Count; j++)
+                {
+                    gl.Color(1f, 1f, 1f);
+                    gl.Vertex(vertex);
+
+                    gl.Color(1f, 1f, 1f);
+                    gl.Vertex(vertex + _normals[i][j]);
+                }
+            }
+
+            gl.Color(1f, 1f, 1f);
+            gl.Vertex(_path[^1]);
+
+            gl.Color(1f, 1f, 1f);
+            gl.Vertex(_path[^1] + _normals[^1][0]);
+
+            gl.End();
         }
 
-        gl.End();
     }
 
-    private void DrawBeginning(OpenGL gl)
+    private void DrawBeginning(OpenGL gl, bool texture)
     {
+        gl.Normal(_normals[0][0]);
         gl.Begin(OpenGL.GL_POLYGON);
 
         foreach (var vertex in _sections[0])
         {
-            gl.Color(1f, 0f, 0f);
+            if (texture)
+            {
+                gl.TexCoord(1f, 1f);
+            }
+            else
+            {
+                gl.Color(1f, 0f, 0f);
+            }
+
             gl.Vertex(vertex);
         }
 
         gl.End();
     }
 
-    private void DrawNode(OpenGL gl, Section previousSection, Section section)
+    //TODO поиграться с координатами
+    private void DrawNode(OpenGL gl, Section previousSection, Section section, Vector3[] normals, bool texture)
+    {
+        gl.Begin(OpenGL.GL_TRIANGLES);
+
+        for (var i = 0; i < section.Count - 1; i++)
+        {
+            if (texture)
+            {
+                gl.Normal(normals[i]);
+                gl.TexCoord(1f, 1f);
+                gl.Vertex(previousSection[i]);
+
+                gl.Normal(normals[i]);
+                gl.TexCoord(1f, 0f);
+                gl.Vertex(section[i]);
+
+                gl.Normal(normals[i]);
+                gl.TexCoord(0f, 1f);
+                gl.Vertex(previousSection[i + 1]);
+            }
+            else
+            {
+                gl.Normal(normals[i]);
+                gl.Color(1f, 0f, 0f);
+                gl.Vertex(previousSection[i]);
+
+                gl.Normal(normals[i]);
+                gl.Color(1f, 0f, 0f);
+                gl.Vertex(section[i]);
+
+                gl.Normal(normals[i]);
+                gl.Color(1f, 0f, 0f);
+                gl.Vertex(previousSection[i + 1]);
+            }
+        }
+
+        if (texture)
+        {
+            gl.Normal(normals[^1]);
+            gl.TexCoord(1f, 1f);
+            gl.Vertex(previousSection[^1]);
+
+            gl.Normal(normals[^1]);
+            gl.TexCoord(1f, 0f);
+            gl.Vertex(section[^1]);
+
+            gl.Normal(normals[^1]);
+            gl.TexCoord(0f, 1f);
+            gl.Vertex(previousSection[0]);
+        }
+        else
+        {
+            gl.Normal(normals[^1]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(previousSection[^1]);
+
+            gl.Normal(normals[^1]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(section[^1]);
+
+            gl.Normal(normals[^1]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(previousSection[0]);
+        }
+
+        for (var i = 0; i < section.Count - 1; i++)
+        {
+            if (texture)
+            {
+                gl.Normal(normals[i]);
+                gl.TexCoord(1f, 0f);
+                gl.Vertex(section[i]);
+
+                gl.Normal(normals[i]);
+                gl.TexCoord(0f, 1f);
+                gl.Vertex(previousSection[i + 1]);
+
+                gl.Normal(normals[i]);
+                gl.TexCoord(0f, 0f);
+                gl.Vertex(section[i + 1]);
+            }
+            else
+            {
+                gl.Normal(normals[i]);
+                gl.Color(1f, 0f, 0f);
+                gl.Vertex(section[i]);
+
+                gl.Normal(normals[i]);
+                gl.Color(1f, 0f, 0f);
+                gl.Vertex(previousSection[i + 1]);
+
+                gl.Normal(normals[i]);
+                gl.Color(1f, 0f, 0f);
+                gl.Vertex(section[i + 1]);
+            }
+        }
+
+        if (texture)
+        {
+            gl.Normal(normals[^1]);
+            gl.TexCoord(1f, 0f);
+            gl.Vertex(section[^1]);
+
+            gl.Normal(normals[^1]);
+            gl.TexCoord(0f, 1f);
+            gl.Vertex(previousSection[0]);
+
+            gl.Normal(normals[^1]);
+            gl.TexCoord(0f, 0f);
+            gl.Vertex(section[0]);
+        }
+        else
+        {
+            gl.Normal(normals[^1]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(section[^1]);
+
+            gl.Normal(normals[^1]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(previousSection[0]);
+
+            gl.Normal(normals[^1]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(section[0]);
+        }
+
+        gl.End();
+    }
+
+    private void DrawEnd(OpenGL gl, bool texture)
+    {
+        gl.Normal(-_normals[^1][0]);
+        gl.Begin(OpenGL.GL_POLYGON);
+
+        foreach (var vertex in _sections[^1])
+        {
+            if (texture)
+            {
+                gl.TexCoord(1f, 1f);
+            }
+            else
+            {
+                gl.Color(1f, 0f, 0f);
+            }
+
+            gl.Vertex(vertex);
+        }
+
+        gl.End();
+    }
+
+    private void DrawBeginningSmooth(OpenGL gl, bool texture)
+    {
+        gl.Begin(OpenGL.GL_POLYGON);
+
+        for (var i = 0; i < _sections[0].Count; i++)
+        {
+            gl.Normal(_normals[0][i]);
+
+            var vertex = _sections[0][i];
+            if (texture)
+            {
+                gl.TexCoord(1f, 1f);
+            }
+            else
+            {
+                gl.Color(1f, 0f, 0f);
+            }
+
+            gl.Vertex(vertex);
+        }
+
+        gl.End();
+    }
+
+    private void DrawNodeSmooth(OpenGL gl, Section previousSection, Section section, Vector3[] normals, bool texture)
     {
         gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
 
@@ -169,6 +325,7 @@ public class Figure
             gl.Color(1f, 0f, 0f);
             gl.Vertex(previousSection[i]);
 
+            gl.Normal(normals[i]);
             gl.Color(1f, 0f, 0f);
             gl.Vertex(section[i]);
         }
@@ -176,19 +333,53 @@ public class Figure
         gl.Color(1f, 0f, 0f);
         gl.Vertex(previousSection[0]);
 
+        gl.Normal(normals[0]);
         gl.Color(1f, 0f, 0f);
         gl.Vertex(section[0]);
 
         gl.End();
     }
 
-    private void DrawEnd(OpenGL gl)
+    private void DrawEndSmooth(OpenGL gl, bool texture)
     {
+        gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
+
+        for (var i = 0; i < _sections[^1].Count; i++)
+        {
+            gl.Normal(_normals[^2][i]);
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(_sections[^2][i]);
+
+            gl.Color(1f, 0f, 0f);
+            gl.Vertex(_sections[^1][i]);
+        }
+
+        gl.Normal(_normals[^2][0]);
+        gl.Color(1f, 0f, 0f);
+        gl.Vertex(_sections[^2][0]);
+
+        gl.Color(1f, 0f, 0f);
+        gl.Vertex(_sections[^1][0]);
+
+        gl.End();
+
         gl.Begin(OpenGL.GL_POLYGON);
 
-        foreach (var vertex in _sections[^1])
+        for (var i = 0; i < _sections[^1].Count; i++)
         {
-            gl.Color(1f, 0f, 0f);
+            gl.Normal(-_normals[^1][i]);
+
+            var vertex = _sections[^1][i];
+
+            if (texture)
+            {
+                gl.TexCoord(1f, 1f);
+            }
+            else
+            {
+                gl.Color(1f, 0f, 0f);
+            }
+
             gl.Vertex(vertex);
         }
 

@@ -11,7 +11,7 @@ public static class NumericsExtensions
 
     public static double ToRadians(this double degrees)
     {
-        return Math.PI / 180f * degrees;
+        return Math.PI / 180d * degrees;
     }
 
     public static float ToDegrees(this float radians)
@@ -21,6 +21,6 @@ public static class NumericsExtensions
 
     public static double ToDegrees(this double radians)
     {
-        return radians * 180f / Math.PI;
+        return radians * 180d / Math.PI;
     }
 }

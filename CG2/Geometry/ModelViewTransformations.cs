@@ -22,8 +22,11 @@ public class ModelViewTransformations
         var sin = Math.Sin(radians);
         var cos = Math.Cos(radians);
 
-        vector.Y = (float)(cos * vector.Y - sin * vector.Z);
-        vector.Z = (float)(sin * vector.Y + cos * vector.Z);
+        var y = (float)(cos * vector.Y - sin * vector.Z);
+        var z = (float)(sin * vector.Y + cos * vector.Z);
+
+        vector.Y = y;
+        vector.Z = z;
 
         return vector;
     }
@@ -35,8 +38,11 @@ public class ModelViewTransformations
         var sin = Math.Sin(radians);
         var cos = Math.Cos(radians);
 
-        vector.X = (float)(cos * vector.X + sin * vector.Z);
-        vector.Z = (float)(-sin * vector.X + cos * vector.Z);
+        var x = (float)(cos * vector.X + sin * vector.Z);
+        var z = (float)(-sin * vector.X + cos * vector.Z);
+
+        vector.X = x;
+        vector.Z = z;
 
         return vector;
     }
@@ -48,8 +54,11 @@ public class ModelViewTransformations
         var sin = Math.Sin(radians);
         var cos = Math.Cos(radians);
 
-        vector.X = (float)(cos * vector.X - sin * vector.Y);
-        vector.Y = (float)(sin * vector.X + cos * vector.Y);
+        var x = (float)(cos * vector.X - sin * vector.Y);
+        var y = (float)(sin * vector.X + cos * vector.Y);
+
+        vector.X = x;
+        vector.Y = y;
 
         return vector;
     }

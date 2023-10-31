@@ -10,4 +10,9 @@ public static class OpenGLExtensions
     {
         gl.Vertex(vertex.X, vertex.Y, vertex.Z);
     }
+
+    public static void Normal(this OpenGL gl, Vector3 normal)
+    {
+        gl.Normal(normal.X, normal.Y, normal.Z);
+    }
 }

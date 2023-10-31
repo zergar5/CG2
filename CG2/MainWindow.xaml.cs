@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net.NetworkInformation;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,6 +30,7 @@ public partial class MainWindow : Window
     private Figure _figure;
     private Vector2[] _section;
     private Vector3[] _path;
+    private Vector3[] _scales;
     private Point _previousPosition;
 
     public MainWindow()
@@ -41,7 +43,11 @@ public partial class MainWindow : Window
         };
         _path = new Vector3[]
         {
-            new(-1, 0, 1), new(0, 1, 0), new(0, 2, -1)
+            new(0, 0, 0), new(1, 0, 0), new(2, 1, 0)
+        };
+        _scales = new Vector3[]
+        {
+            new(1, 1, 1), new(0.25f, 0.25f, 0.25f), new(2f, 2f, 2f)
         };
         GlWindow.FrameRate = 60;
         _camera = new Camera();
@@ -63,10 +69,8 @@ public partial class MainWindow : Window
 
         _gl.End();
 
-        _figure.Draw(_gl);
-        _figure.DrawNormals(_gl);
-
-        _camera.ChangeCamera(_gl);
+        _figure.Draw(_gl, false, false);
+        _figure.DrawNormals(_gl, false);
 
         _gl.Flush();
     }
@@ -75,16 +79,13 @@ public partial class MainWindow : Window
     {
         _gl = args.OpenGL;
 
-        _camera.Rotate(_previousPosition, _previousPosition);
-        _camera.ChangeCamera(_gl);
-
         SetDepthBuffer();
         SetDoubleBuffer();
 
-        //_gl.PolygonMode(OpenGL.GL_FRONT_AND_BACK, OpenGL.GL_LINE);
-
-        _figure = _figureBuilder.Build(_section, _path);
-        _figure.CalculateNormals();
+        _figure = _figureBuilder
+            .CalculateSections(_section, _path, _scales)
+            .CalculateNormals(false)
+            .Build();
     }
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
@@ -92,8 +93,11 @@ public partial class MainWindow : Window
         //SetOrthographicProjection(_gl);
         SetPerspectiveProjection(_gl);
 
-        SetLight();
-        SetMaterial();
+        _camera.Rotate(_previousPosition, _previousPosition);
+        _camera.ChangeCamera(_gl);
+
+        SetLight(1);
+        SetMaterial(1);
         SetTexture();
 
         OpenGLDraw(sender, args);
@@ -152,7 +156,7 @@ public partial class MainWindow : Window
     {
         gl.MatrixMode(OpenGL.GL_PROJECTION);
         gl.LoadIdentity();
-        gl.Ortho(-GlWindow.ActualWidth / 2, GlWindow.ActualWidth/2, -GlWindow.ActualHeight / 2, GlWindow.ActualHeight / 2, 0.1, 100);
+        gl.Ortho(-2, 2, -2, 2, 0.1, 100);
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         gl.LoadIdentity();
         _previousPosition = new Point(GlWindow.ActualWidth / 2, GlWindow.ActualHeight / 2);
@@ -180,17 +184,101 @@ public partial class MainWindow : Window
         _gl.Enable(OpenGL.GL_DOUBLEBUFFER);
     }
 
-    private void SetLight()
+    private void SetLight(int number)
     {
-        _gl.Enable(OpenGL.GL_LIGHTING);
-        _gl.Enable(OpenGL.GL_LIGHT0);
-        _gl.LightModel(OpenGL.GL_LIGHT_MODEL_TWO_SIDE, OpenGL.GL_TRUE);
-        _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, new[] { -6f, 2f, -3f, 1f });
+        //_gl.Enable(OpenGL.GL_LIGHTING);
+        //_gl.Enable(OpenGL.GL_LIGHT0);
+        //_gl.LightModel(OpenGL.GL_LIGHT_MODEL_TWO_SIDE, OpenGL.GL_FALSE);
+        //_gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, new[] { 4f, -4f, 0f, 0f });
+
+        if (number == 0)
+        {
+
+        }
+        else if (number == 1)
+        {
+            _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new[] { 0.1f, 0.1f, 0.1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, new[] { 0f, 0f, 0f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, new[] { 0f, 0f, 0f, 1f });
+        }
+        else if(number == 2)
+        {
+            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new[]{0f, 0f, 1f, 0f});
+        }
+        else if(number == 3)
+        {
+            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1f, 1f, 1f, 1f });
+        }
+        else if(number == 4)
+        {
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_POSITION, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_EXPONENT, 30f);
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_CUTOFF, 20f);
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_DIRECTION, new[] { -1f, -1f, -1f, 0f });
+        }
+        else if(number == 5)
+        {
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_POSITION, new[] { 1f, 1f, 1f, 1f });
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_CONSTANT_ATTENUATION, 0f);
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_LINEAR_ATTENUATION, 5e-3f);
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_QUADRATIC_ATTENUATION, 0f);
+        }
     }
 
-    private void SetMaterial()
+    private void SetMaterial(int number)
     {
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE, new[] { 0.2f, 0.2f, 0.2f, 1f });
+        if (number == 0)
+        {
+            return;
+        }
+        else if (number == 1)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new []{0.0215f, 0.1745f, 0.0215f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.0756f, 0.6142f, 0.0756f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6330f, 0.7278f, 0.6330f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.6f);
+        }
+        else if (number == 2)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0537f, 0.05f, 0.0662f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.1827f, 0.17f, 0.2252f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.3327f, 0.3286f, 0.3464f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.3f);
+        }
+        else if (number == 3)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.2472f, 0.1995f, 0.0745f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.7516f, 0.6064f, 0.2264f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6282f, 0.5558f, 0.3660f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.4f);
+        }
+        else if (number == 4)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.055f, 0.055f, 0.055f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.7f, 0.7f, 0.7f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.25f);
+        }
+        else if (number == 5)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.5f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.7f, 0.6f, 0.6f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.25f);
+        }
+
         _gl.Enable(OpenGL.GL_COLOR_MATERIAL);
     }
 
@@ -198,7 +286,7 @@ public partial class MainWindow : Window
     {
         var texture = new Texture();
 
-        var path = @"..\CG2\Textures\Texture1.bmp";
+        var path = @"..\CG2\Textures\Texture2.png";
         var textureImage = new Bitmap(path);
 
         texture.Create(_gl, textureImage);
