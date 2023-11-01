@@ -345,7 +345,7 @@ public partial class MainWindow : Window
 
     }
 
-    private void NormalsSmoothingToggleButton_Checked(object sender, RoutedEventArgs e)
+    private void NormalsSmoothingCheckBox_Checked(object sender, RoutedEventArgs e)
     {
 
     }
@@ -380,7 +380,7 @@ public partial class MainWindow : Window
 
     }
 
-    private void NormalsSmoothingToggleButton_Unchecked(object sender, RoutedEventArgs e)
+    private void NormalsSmoothingCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
 
     }
