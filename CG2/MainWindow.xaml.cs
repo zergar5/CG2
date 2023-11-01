@@ -27,7 +27,8 @@ public partial class MainWindow : Window
     private bool _showNormals;
     private bool _smooth;
     private Projection _projection;
-    private Texture _texture = new Texture();
+    private int _materialNumber;
+    private readonly Texture _texture = new();
 
     public MainWindow()
     {
@@ -56,6 +57,10 @@ public partial class MainWindow : Window
         _gl.ClearColor(0f, 0f, 0f, 1f);
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
+        _camera.ChangeCamera(_gl);
+
+        //_gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1f, -1f, 0f, 1f });
+
         _gl.Begin(OpenGL.GL_LINE_STRIP);
 
         foreach (var point in _path)
@@ -65,6 +70,8 @@ public partial class MainWindow : Window
         }
 
         _gl.End();
+
+        SetMaterial(_materialNumber);
 
         if (_carcassMode)
         {
@@ -91,6 +98,8 @@ public partial class MainWindow : Window
         BufferStockCheckBox.IsChecked = true;
         _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
 
+        _gl.Enable(OpenGL.GL_LIGHTING);
+
         InitLights();
 
         SetPerspectiveProjection(_gl);
@@ -114,6 +123,8 @@ public partial class MainWindow : Window
         {
             SetPerspectiveProjection(_gl);
         }
+
+        _camera.Rotate(_previousPosition, _previousPosition);
     }
 
     private void GlWindowOnKeyDown(object sender, KeyEventArgs args)
@@ -121,32 +132,26 @@ public partial class MainWindow : Window
         if (args.Key == Key.W)
         {
             _camera.MoveForward();
-            _camera.ChangeCamera(_gl);
         }
         else if (args.Key == Key.A)
         {
             _camera.MoveLeft();
-            _camera.ChangeCamera(_gl);
         }
         else if (args.Key == Key.S)
         {
             _camera.MoveBackward();
-            _camera.ChangeCamera(_gl);
         }
         else if (args.Key == Key.D)
         {
             _camera.MoveRight();
-            _camera.ChangeCamera(_gl);
         }
         else if (args.Key == Key.Space)
         {
             _camera.MoveUp();
-            _camera.ChangeCamera(_gl);
         }
         else if (args.Key == Key.LeftCtrl)
         {
             _camera.MoveDown();
-            _camera.ChangeCamera(_gl);
         }
     }
 
@@ -159,7 +164,6 @@ public partial class MainWindow : Window
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             _camera.Rotate(currentPosition, _previousPosition);
-            _camera.ChangeCamera(_gl);
         }
 
         _previousPosition = currentPosition;
@@ -172,9 +176,6 @@ public partial class MainWindow : Window
         gl.Ortho(-2, 2, -2, 2, 0.1, 2);
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         gl.LoadIdentity();
-
-        _camera.Rotate(_previousPosition, _previousPosition);
-        _camera.ChangeCamera(_gl);
     }
 
     private void SetPerspectiveProjection(OpenGL gl)
@@ -184,9 +185,6 @@ public partial class MainWindow : Window
         gl.Perspective(60f, GlWindow.ActualWidth / GlWindow.ActualHeight, 0.1f, 100f);
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         gl.LoadIdentity();
-
-        _camera.Rotate(_previousPosition, _previousPosition);
-        _camera.ChangeCamera(_gl);
     }
 
     private void InitLights()
@@ -200,12 +198,12 @@ public partial class MainWindow : Window
         _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new[] { -0.2f, -1f, -0.3f, 0f });
+        _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new[] { 0f, 0f, 1f, 0f });
 
         _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1.2f, 1f, 1f });
+        _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1f, -1f, 0f, 1f });
 
         _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
@@ -218,16 +216,51 @@ public partial class MainWindow : Window
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_POSITION, new[] { 1f, 1f, 1f, 1f });
+        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_POSITION, new[] { 1f, -50f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_CONSTANT_ATTENUATION, 0f);
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_LINEAR_ATTENUATION, 5e-3f);
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_QUADRATIC_ATTENUATION, 0f);
     }
 
-    private void SetTexture()
+    private void SetMaterial(int number)
     {
-
+        if (number == 1)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0215f, 0.1745f, 0.0215f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.0756f, 0.6142f, 0.0756f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6330f, 0.7278f, 0.6330f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 76.8f);
+        }
+        else if (number == 2)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0537f, 0.05f, 0.0662f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.1827f, 0.17f, 0.2252f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.3327f, 0.3286f, 0.3464f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 38.4f);
+        }
+        else if (number == 3)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.2472f, 0.1995f, 0.0745f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.7516f, 0.6064f, 0.2264f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6282f, 0.5558f, 0.3660f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 51.2f);
+        }
+        else if (number == 4)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.055f, 0.055f, 0.055f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.7f, 0.7f, 0.7f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 32f);
+        }
+        else if (number == 5)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.5f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.7f, 0.6f, 0.6f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 32f);
+        }
     }
+
     private void BufferStockCheckBox_Checked(object sender, RoutedEventArgs e)
     {
         _gl.Enable(OpenGL.GL_DEPTH_TEST);
@@ -275,7 +308,6 @@ public partial class MainWindow : Window
         _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
     }
 
-
     private void ObjectFrameCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
         _carcassMode = false;
@@ -285,7 +317,6 @@ public partial class MainWindow : Window
     {
         _showNormals = false;
     }
-
 
     private void NormalsSmoothingCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
@@ -306,13 +337,10 @@ public partial class MainWindow : Window
             string filename = dialog.FileName;
             FileNameText.Text = filename;
         }
-
     }
 
     private void BackLightCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        _gl.Enable(OpenGL.GL_LIGHTING);
-
         _gl.Enable(OpenGL.GL_LIGHT0);
     }
 
@@ -323,32 +351,26 @@ public partial class MainWindow : Window
 
     private void PointLightCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        _gl.Enable(OpenGL.GL_LIGHTING);
-
-        _gl.Enable(OpenGL.GL_LIGHT1);
+        _gl.Enable(OpenGL.GL_LIGHT2);
     }
 
     private void PointLightCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-        _gl.Disable(OpenGL.GL_LIGHT1);
+        _gl.Disable(OpenGL.GL_LIGHT2);
     }
 
     private void DirectLightCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        _gl.Enable(OpenGL.GL_LIGHTING);
-
-        _gl.Enable(OpenGL.GL_LIGHT2);
+        _gl.Enable(OpenGL.GL_LIGHT1);
     }
 
     private void DirectLightCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-        _gl.Disable(OpenGL.GL_LIGHT2);
+        _gl.Disable(OpenGL.GL_LIGHT1);
     }
 
     private void SearchLightCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        _gl.Enable(OpenGL.GL_LIGHTING);
-
         _gl.Enable(OpenGL.GL_LIGHT3);
     }
 
@@ -359,8 +381,6 @@ public partial class MainWindow : Window
 
     private void SearchLight2CheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        _gl.Enable(OpenGL.GL_LIGHTING);
-
         _gl.Enable(OpenGL.GL_LIGHT4);
     }
 
@@ -371,70 +391,33 @@ public partial class MainWindow : Window
 
     private void EmeraldMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        //_gl.Disable(OpenGL.GL_COLOR_MATERIAL);
-
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0215f, 0.1745f, 0.0215f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.0756f, 0.6142f, 0.0756f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6330f, 0.7278f, 0.6330f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.6f);
-
-        //_gl.Enable(OpenGL.GL_COLOR_MATERIAL);
+        _materialNumber = 1;
     }
 
     private void ObsidianMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        //_gl.Disable(OpenGL.GL_COLOR_MATERIAL);
-
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0537f, 0.05f, 0.0662f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.1827f, 0.17f, 0.2252f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.3327f, 0.3286f, 0.3464f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.3f);
-
-        //_gl.Enable(OpenGL.GL_Ma);
+        _materialNumber = 2;
     }
 
     private void GoldMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        //_gl.Disable(OpenGL.GL_COLOR_MATERIAL);
-
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.2472f, 0.1995f, 0.0745f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.7516f, 0.6064f, 0.2264f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.6282f, 0.5558f, 0.3660f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.4f);
-
-        //_gl.Enable(OpenGL.GL_COLOR_MATERIAL);
+        _materialNumber = 3;
     }
 
     private void WhitePlasticMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        //_gl.Disable(OpenGL.GL_COLOR_MATERIAL);
-
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.055f, 0.055f, 0.055f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.7f, 0.7f, 0.7f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.25f);
-
-        //_gl.Enable(OpenGL.GL_COLOR_MATERIAL);
+        _materialNumber = 4;
     }
 
     private void RedPlasticMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        //_gl.Disable(OpenGL.GL_COLOR_MATERIAL);
-
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.5f, 0f, 0f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0.7f, 0.6f, 0.6f });
-        _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0.25f);
-
-        //_gl.Enable(OpenGL.GL_COLOR_MATERIAL);
+        _materialNumber = 5;
     }
 
     private void FirstTextureRadioButton_Checked(object sender, RoutedEventArgs e)
     {
         var path = @"..\CG2\Textures\Texture1.png";
         var textureImage = new Bitmap(path);
-
-        _gl.Disable(OpenGL.GL_TEXTURE_2D);
 
         _texture.Create(_gl, textureImage);
 
@@ -447,8 +430,6 @@ public partial class MainWindow : Window
     {
         var path = @"..\CG2\Textures\Texture2.png";
         var textureImage = new Bitmap(path);
-
-        _gl.Disable(OpenGL.GL_TEXTURE_2D);
 
         _texture.Create(_gl, textureImage);
 
