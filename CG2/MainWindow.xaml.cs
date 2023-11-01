@@ -52,13 +52,15 @@ public partial class MainWindow : Window
         };
         GlWindow.FrameRate = 60;
         _camera = new Camera();
-        _figureBuilder = new FigureBuilder();
+        _figureBuilder = new FigureBuilder(new Mapper2D());
     }
 
     private void OpenGLDraw(object sender, OpenGLRoutedEventArgs args)
     {
         _gl.ClearColor(0f, 0f, 0f, 1f);
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+
+        _gl.Enable(OpenGL.GL_DOUBLEBUFFER);
 
         _gl.Begin(OpenGL.GL_LINE_STRIP);
 
@@ -71,7 +73,7 @@ public partial class MainWindow : Window
         _gl.End();
 
         //_figure.DrawCarcass(_gl);
-        _figure.Draw(_gl, false, true);
+        _figure.Draw(_gl, true, true);
         _figure.DrawNormals(_gl, true);
 
         _gl.Flush();
@@ -86,8 +88,8 @@ public partial class MainWindow : Window
 
         _figure = _figureBuilder
             .CalculateSections(_section, _path, _scales)
-            .CalculateNormals(true)
-            .BuildWithSmooth();
+            .CalculateNormals()
+            .Build();
     }
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
@@ -101,7 +103,7 @@ public partial class MainWindow : Window
         //SetLight(2);
         SetLight(3);
         SetMaterial(1);
-        //SetTexture();
+        SetTexture();
 
         OpenGLDraw(sender, args);
     }
@@ -294,7 +296,7 @@ public partial class MainWindow : Window
     {
         var texture = new Texture();
 
-        var path = @"..\CG2\Textures\Texture2.png";
+        var path = @"..\CG2\Textures\Texture1.jpg";
         var textureImage = new Bitmap(path);
 
         texture.Create(_gl, textureImage);

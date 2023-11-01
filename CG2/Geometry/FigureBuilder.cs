@@ -9,28 +9,27 @@ namespace CG2.Geometry;
 
 public class FigureBuilder
 {
+    private readonly Mapper2D _mapper2D;
     private Section[] _sections;
     private Vector3[][] _normals;
     private Vector3[][] _smoothNormals;
     private Vector3[] _path;
-    private Vector2[] _scales;
+    private Vector2[] _texCoords;
 
+    public FigureBuilder(Mapper2D mapper2D)
+    {
+        _mapper2D = mapper2D;
+    }
 
     public Figure Build()
     {
-        return new Figure(_sections, _normals, _path);
-    }
-
-    public Figure BuildWithSmooth()
-    {
-        return new Figure(_sections, _smoothNormals, _path);
+        return new Figure(_sections, _normals, _smoothNormals, _path, _texCoords);
     }
 
     public FigureBuilder CalculateSections(Vector2[] section, Vector3[] path, Vector2[] scales)
     {
         _sections = new Section[path.Length];
         _path = path;
-        _scales = scales;
 
         for (var i = 0; i < _sections.Length; i++)
         {
@@ -55,10 +54,20 @@ public class FigureBuilder
 
         _sections[^1] = CalculateEnd(_sections[^1], nextDirection, direction, path[^1], scales[^1]);
 
+        _texCoords = new Vector2[section.Length];
+        _mapper2D.Start(section);
+        
+        for (var i = 0; i < section.Length; i++)
+        {
+            _texCoords[i] = _mapper2D.Lerp(section[i]);
+        }
+
+        _mapper2D.Finish();
+
         return this;
     }
 
-    public FigureBuilder CalculateNormals(bool smoothMode)
+    public FigureBuilder CalculateNormals()
     {
         _normals = new Vector3[_sections.Length + 1][];
 
@@ -88,38 +97,35 @@ public class FigureBuilder
         vector02 = _sections[^1][2] - _sections[^1][0];
         _normals[^1][0] = -Vector3.Normalize(Vector3.Cross(vector01, vector02));
 
-        if (smoothMode)
+        _smoothNormals = new Vector3[_sections.Length][];
+        _smoothNormals[0] = new Vector3[_sections[0].Count];
+
+        _smoothNormals[0][0] = Vector3.Normalize(_normals[0][0] + _normals[1][0] + _normals[1][^1]);
+
+        for (var i = 1; i < _sections[0].Count; i++)
         {
-            _smoothNormals = new Vector3[_sections.Length][];
-            _smoothNormals[0] = new Vector3[_sections[0].Count];
+            _smoothNormals[0][i] = Vector3.Normalize(_normals[0][0] + _normals[1][i] + _normals[1][i - 1]);
+        }
 
-            _smoothNormals[0][0] = Vector3.Normalize(_normals[0][0] + _normals[1][0] + _normals[1][^1]);
+        for (var i = 1; i < _sections.Length - 1; i++)
+        {
+            _smoothNormals[i] = new Vector3[_sections[i].Count];
 
-            for (var i = 1; i < _sections[0].Count; i++)
+            _smoothNormals[i][0] = Vector3.Normalize(_normals[i][0] + _normals[i][^1] + _normals[i + 1][0] + _normals[i + 1][^1]);
+
+            for (var j = 1; j < _sections[i].Count; j++)
             {
-                _smoothNormals[0][i] = Vector3.Normalize(_normals[0][0] + _normals[1][i] + _normals[1][i - 1]);
+                _smoothNormals[i][j] = Vector3.Normalize(_normals[i][j] + _normals[i][j - 1] + _normals[i + 1][j] + _normals[i + 1][j - 1]);
             }
+        }
 
-            for (var i = 1; i < _sections.Length - 1; i++)
-            {
-                _smoothNormals[i] = new Vector3[_sections[i].Count];
+        _smoothNormals[^1] = new Vector3[_sections[^1].Count];
 
-                _smoothNormals[i][0] = Vector3.Normalize(_normals[i][0] + _normals[i][^1] + _normals[i + 1][0] + _normals[i + 1][^1]);
+        _smoothNormals[^1][0] = Vector3.Normalize(_normals[^1][0] + _normals[^2][0] + _normals[^2][^1]);
 
-                for (var j = 1; j < _sections[i].Count; j++)
-                {
-                    _smoothNormals[i][j] = Vector3.Normalize(_normals[i][j] + _normals[i][j - 1] + _normals[i + 1][j] + _normals[i + 1][j - 1]);
-                }
-            }
-
-            _smoothNormals[^1] = new Vector3[_sections[^1].Count];
-
-            _smoothNormals[^1][0] = Vector3.Normalize(_normals[^1][0] + _normals[^2][0] + _normals[^2][^1]);
-
-            for (var i = 1; i < _sections[^1].Count; i++)
-            {
-                _smoothNormals[^1][i] = Vector3.Normalize(_normals[^1][0] + _normals[^2][i] + _normals[^2][i - 1]);
-            }
+        for (var i = 1; i < _sections[^1].Count; i++)
+        {
+            _smoothNormals[^1][i] = Vector3.Normalize(_normals[^1][0] + _normals[^2][i] + _normals[^2][i - 1]);
         }
 
         return this;
@@ -183,7 +189,7 @@ public class FigureBuilder
         }
 
         section.Translate(point);
-        
+
         return section;
     }
 
