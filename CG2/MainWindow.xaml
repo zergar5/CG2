@@ -56,27 +56,39 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock  x:Name="FileNameText"
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Text="Название файла"
-                                FontSize="14"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                    />
-                    <Button x:Name="OpenFileDialogButton"
-                            Click="OpenFileDialogButton_Click"
-                            Content="Загрузить файл"
-                            FontSize="14"
-                            Grid.Row="0"
+                    <Grid
+                            Grid.Row="1"
                             Grid.Column="1"
-                            Width="140"
-                            Margin="0, 10, 10, 10"
-                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                    >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>                        
+                        <TextBlock  x:Name="FileNameText"
+                                    Grid.Row="0"
+                                    Margin="0, 0, 0, 10"                                    
+                                    Text="Название файла"
+                                    FontSize="14"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
                     />
+                        <Button x:Name="OpenFileDialogButton"
+                                Click="OpenFileDialogButton_Click"
+                                Content="Загрузить"
+                                FontSize="14"
+                                Grid.Row="1"
+                                Width="100"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                        />
+                    </Grid>
+                    
                     <GroupBox Header="Выберете режимы"
                               Grid.Column="0"
-                              Grid.Row="1"
+                              Grid.Row="0"
                               Height="Auto"
                               Margin="0, 0, 10, 10"
                               Style="{StaticResource MaterialDesignCardGroupBox}"
@@ -115,22 +127,27 @@
                                         Grid.Column="0"
                                         Grid.Row="1"
                             />
-                            <Label
-                            Content="освещение и материалы"
-                            Grid.Column="1"
-                            Grid.Row="2"
-                    />
-                            <CheckBox   x:Name="LightingMaterialsCheckBox"
-                                        Checked="LightingMaterialsCheckBox_Checked"
-                                        Unchecked="LightingMaterialsCheckBox_Unchecked"
-                                        Grid.Column="0"
+                            <Label  Content="cглаживание нормалей"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="0, 0, 5, 5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"  
+                                    Style="{StaticResource MaterialDesignLabel}"
+                        />
+                            <CheckBox   x:Name="NormalsSmoothingCheckBox"
+                                        Checked="NormalsSmoothingCheckBox_Checked"
+                                        Unchecked="NormalsSmoothingCheckBox_Unchecked"
                                         Grid.Row="2"
-                            />
+                                        Grid.Column="0"
+                                        Margin="0, 0, 5, 5"
+                                        Width="30"
+                        />                            
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Показать"
                               Grid.Column="1"
-                              Grid.Row="1"
+                              Grid.Row="0"
                               Height="Auto"
                               Margin="0, 0, 10, 10"
                               Style="{StaticResource MaterialDesignCardGroupBox}"
@@ -187,7 +204,7 @@
                     </GroupBox>
                     <GroupBox   Header="Выберете проекцию"
                                 Grid.Column="0"
-                                Grid.Row="2"                                
+                                Grid.Row="1"                                
                                 Margin="0, 0, 10, 10"
                                 Style="{StaticResource MaterialDesignCardGroupBox}"
                     >
@@ -195,11 +212,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
                             <Label 
                                 Content="Ортографическая"
@@ -211,7 +227,6 @@
                                             GroupName="Проекция"
                                             Grid.Column="2"
                                             Margin="40, 5, 0, 0"
-                                            Width="20"                                            
                             />
                             <Label 
                                 Content="Перспективная"
@@ -230,39 +245,63 @@
 
                         </Grid>
                     </GroupBox>
-                    <GroupBox   Header="Другие опции"
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="0, 0, 10, 10"
-                                Style="{StaticResource MaterialDesignCardGroupBox}"
-                    >
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Label  Content="Сглаживание нормалей"
+                    <Grid
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Expander   Header="Освещение"
                                     Grid.Row="0"
                                     Grid.Column="0"
-                                    Margin="0, 0, 5, 5"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"  
-                                    Style="{StaticResource MaterialDesignLabel}"
-                        />
-                            <ToggleButton   x:Name="NormalsSmoothingToggleButton"
-                                            Checked="NormalsSmoothingToggleButton_Checked"
-                                            Unchecked="NormalsSmoothingToggleButton_Unchecked"
-                                            Grid.Row="0"
-                                            Grid.Column="1"
-                                            Margin="0, 0, 5, 5"
-                                            Width="30"
-                        />
-                        </Grid>
-
-                    </GroupBox>
+                                    Margin="0, 0, 10, 10"
+                                    Style="{StaticResource MaterialDesignExpander}"
+                    >
+                            <StackPanel>
+                                <CheckBox>1</CheckBox>
+                                <CheckBox>2</CheckBox>
+                                <CheckBox>3</CheckBox>
+                                <CheckBox>4</CheckBox>
+                                <CheckBox>5</CheckBox>
+                            </StackPanel>
+                        </Expander>
+                        <Expander   Header="Материалы"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="0, 0, 10, 10"
+                                    Width="Auto"
+                                    Style="{StaticResource MaterialDesignExpander}"
+                    >
+                            <StackPanel>
+                                <RadioButton>1</RadioButton>
+                                <RadioButton>2</RadioButton>
+                                <RadioButton>3</RadioButton>
+                                <RadioButton>4</RadioButton>
+                                <RadioButton>5</RadioButton>
+                            </StackPanel>
+                        </Expander>
+                        <Expander    Header="Текстуры"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Margin="0, 0, 10, 10"
+                                    Width="Auto"
+                                    Style="{StaticResource MaterialDesignExpander}"
+                    >
+                            <StackPanel>
+                                <RadioButton>1</RadioButton>
+                                <RadioButton>2</RadioButton>
+                                <RadioButton>3</RadioButton>
+                                <RadioButton>4</RadioButton>
+                                <RadioButton>5</RadioButton>
+                            </StackPanel>
+                        </Expander>
+                    </Grid>
+                    
                     <Grid
                         Grid.Column="1"
                         Grid.Row="1"

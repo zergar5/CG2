@@ -358,7 +358,7 @@ public partial class MainWindow : Window
         SetPerspectiveProjection(_gl);
     }
 
-    private void NormalsSmoothingToggleButton_Checked(object sender, RoutedEventArgs e)
+    private void NormalsSmoothingCheckBox_Checked(object sender, RoutedEventArgs e)
     {
         _smooth = true;
     }
@@ -393,7 +393,7 @@ public partial class MainWindow : Window
 
     }
 
-    private void NormalsSmoothingToggleButton_Unchecked(object sender, RoutedEventArgs e)
+    private void NormalsSmoothingCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
         _smooth = false;
     }
