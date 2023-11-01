@@ -14,10 +14,9 @@
 
     <Grid Background="white" Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="GlWindow"
@@ -27,8 +26,8 @@
                                KeyDown="GlWindowOnKeyDown"
                                MouseMove="GlWindow_OnMouseMove"
                                DrawFPS="True"
-                               Width="1000"
-                               Height="600"
+                               MinHeight="560"
+                               MinWidth="500"
                                Padding="0"
                                Margin="0"
                                Grid.Column="0"
