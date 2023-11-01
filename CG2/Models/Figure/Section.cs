@@ -39,13 +39,12 @@ public class Section
         }
     }
 
-    public void Scale(Vector3 scales)
+    public void Scale(Vector2 scales)
     {
         for (var i = 0; i < _vertices3D.Length; i++)
         {
             _vertices3D[i].X *= scales.X;
             _vertices3D[i].Y *= scales.Y;
-            //_vertices3D[i].Z *= scales.Z;
         }
     }
 
