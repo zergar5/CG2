@@ -326,11 +326,6 @@ public partial class MainWindow : Window
         _gl.Enable(OpenGL.GL_DOUBLEBUFFER);
     }
 
-    private void LightingMaterialsCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-
-    }
-
     private void ObjectFrameCheckBox_Checked(object sender, RoutedEventArgs e)
     {
         _carcassMode = true;
@@ -341,10 +336,6 @@ public partial class MainWindow : Window
         _showNormals = true;
     }
 
-    private void TexturesCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-
-    }
 
     private void OrthographicProjectionCheckBox_Checked(object sender, RoutedEventArgs e)
     {
@@ -373,10 +364,6 @@ public partial class MainWindow : Window
         _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
     }
 
-    private void LightingMaterialsCheckBox_Unchecked(object sender, RoutedEventArgs e)
-    {
-
-    }
 
     private void ObjectFrameCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
@@ -388,10 +375,6 @@ public partial class MainWindow : Window
         _showNormals = false;
     }
 
-    private void TexturesCheckBox_Unchecked(object sender, RoutedEventArgs e)
-    {
-
-    }
 
     private void NormalsSmoothingCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
@@ -412,6 +395,156 @@ public partial class MainWindow : Window
             string filename = dialog.FileName;
             FileNameText.Text = filename;
         }
+
+    }
+
+    private void BackLightCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void BackLightCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void PointLightCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void PointLightCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void DirectLightCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void DirectLightCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void EmeraldMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void EmeraldMaterialRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void ObsidianMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void ObsidianMaterialRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void GoldMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void GoldMaterialRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void WhitePlasticMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void WhitePlasticMaterialRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void RedPlasticMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void RedPlasticMaterialRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void FirstTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void FirstTextureRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void SecondTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void SecondTextureRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void ThirdTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void ThirdTextureRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void FourthTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void FourthTextureRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void FithTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void FithTextureRadioButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void SearchLightCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void SearchLightCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void SearchLight2CheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void SearchLight2CheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
 
     }
 }

@@ -14,10 +14,11 @@
 
     <Grid Background="white" Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="1000"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1000"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="GlWindow"
                                OpenGLDraw="OpenGLDraw"
@@ -187,19 +188,7 @@
                                       Unchecked="NormalsCheckBox_Unchecked"
                                       Grid.Column="0"
                                       Grid.Row="1"
-                            />
-                            <Label
-                            Content="текстуры"
-                            Grid.Column="1"
-                            Grid.Row="2"
-                            Style="{StaticResource MaterialDesignLabel}"
-                        />
-                            <CheckBox   x:Name="TexturesCheckBox"
-                                        Checked="TexturesCheckBox_Checked"
-                                        Unchecked="TexturesCheckBox_Unchecked"
-                                        Grid.Column="0"
-                                        Grid.Row="2"
-                            />
+                            />                            
                         </Grid>
                     </GroupBox>
                     <GroupBox   Header="Выберете проекцию"
@@ -263,11 +252,22 @@
                                     Style="{StaticResource MaterialDesignExpander}"
                     >
                             <StackPanel>
-                                <CheckBox>1</CheckBox>
-                                <CheckBox>2</CheckBox>
-                                <CheckBox>3</CheckBox>
-                                <CheckBox>4</CheckBox>
-                                <CheckBox>5</CheckBox>
+                                <CheckBox   x:Name="BackLightCheckBox"
+                                            Checked="BackLightCheckBox_Checked"
+                                            Unchecked="BackLightCheckBox_Unchecked"
+                                >Фоновый</CheckBox>
+                                <CheckBox   x:Name="PointLightCheckBox"
+                                            Checked="PointLightCheckBox_Checked"
+                                            Unchecked="PointLightCheckBox_Unchecked">Точечный</CheckBox>
+                                <CheckBox   x:Name="DirectLightCheckBox"
+                                            Checked="DirectLightCheckBox_Checked"
+                                            Unchecked="DirectLightCheckBox_Unchecked">Направленный</CheckBox>
+                                <CheckBox   x:Name="SearchLightCheckBox"
+                                            Checked="SearchLightCheckBox_Checked"
+                                            Unchecked="SearchLightCheckBox_Unchecked">Прожектор</CheckBox>
+                                <CheckBox   x:Name="SearchLight2CheckBox"
+                                            Checked="SearchLight2CheckBox_Checked"
+                                            Unchecked="SearchLight2CheckBox_Unchecked">Прожектор с убыванием интенсивности</CheckBox>
                             </StackPanel>
                         </Expander>
                         <Expander   Header="Материалы"
@@ -278,11 +278,21 @@
                                     Style="{StaticResource MaterialDesignExpander}"
                     >
                             <StackPanel>
-                                <RadioButton>1</RadioButton>
-                                <RadioButton>2</RadioButton>
-                                <RadioButton>3</RadioButton>
-                                <RadioButton>4</RadioButton>
-                                <RadioButton>5</RadioButton>
+                                <RadioButton    x:Name="EmeraldMaterialRadioButton"
+                                                Checked="EmeraldMaterialRadioButton_Checked"
+                                                Unchecked="EmeraldMaterialRadioButton_Unchecked">Изумруд</RadioButton>
+                                <RadioButton    x:Name="ObsidianMaterialRadioButton"
+                                                Checked="ObsidianMaterialRadioButton_Checked"
+                                                Unchecked="ObsidianMaterialRadioButton_Unchecked">Обсидиан</RadioButton>
+                                <RadioButton    x:Name="GoldMaterialRadioButton"
+                                                Checked="GoldMaterialRadioButton_Checked"
+                                                Unchecked="GoldMaterialRadioButton_Unchecked">Золото</RadioButton>
+                                <RadioButton    x:Name="WhitePlasticMaterialRadioButton"
+                                                Checked="WhitePlasticMaterialRadioButton_Checked"
+                                                Unchecked="WhitePlasticMaterialRadioButton_Unchecked">Белый пластик</RadioButton>
+                                <RadioButton    x:Name="RedPlasticMaterialRadioButton"
+                                                Checked="RedPlasticMaterialRadioButton_Checked"
+                                                Unchecked="RedPlasticMaterialRadioButton_Unchecked">Красный пластик</RadioButton>
                             </StackPanel>
                         </Expander>
                         <Expander    Header="Текстуры"
@@ -293,11 +303,21 @@
                                     Style="{StaticResource MaterialDesignExpander}"
                     >
                             <StackPanel>
-                                <RadioButton>1</RadioButton>
-                                <RadioButton>2</RadioButton>
-                                <RadioButton>3</RadioButton>
-                                <RadioButton>4</RadioButton>
-                                <RadioButton>5</RadioButton>
+                                <RadioButton    x:Name="FirstTextureRadioButton"
+                                                Checked="FirstTextureRadioButton_Checked"
+                                                Unchecked="FirstTextureRadioButton_Unchecked">1</RadioButton>
+                                <RadioButton    x:Name="SecondTextureRadioButton"
+                                                Checked="SecondTextureRadioButton_Checked"
+                                                Unchecked="SecondTextureRadioButton_Unchecked">2</RadioButton>
+                                <RadioButton    x:Name="ThirdTextureRadioButton"
+                                                Checked="ThirdTextureRadioButton_Checked"
+                                                Unchecked="ThirdTextureRadioButton_Unchecked">3</RadioButton>
+                                <RadioButton    x:Name="FourthTextureRadioButton"
+                                                Checked="FourthTextureRadioButton_Checked"
+                                                Unchecked="FourthTextureRadioButton_Unchecked">4</RadioButton>
+                                <RadioButton    x:Name="FithTextureRadioButton"
+                                                Checked="FithTextureRadioButton_Checked"
+                                                Unchecked="FithTextureRadioButton_Unchecked">5</RadioButton>
                             </StackPanel>
                         </Expander>
                     </Grid>
