@@ -32,6 +32,10 @@ public partial class MainWindow : Window
     private Vector3[] _path;
     private Vector2[] _scales;
     private Point _previousPosition;
+    private bool _carcassMode;
+    private bool _showNormals;
+    private bool _smooth;
+    private Projection _projection;
 
     public MainWindow()
     {
@@ -60,22 +64,30 @@ public partial class MainWindow : Window
         _gl.ClearColor(0f, 0f, 0f, 1f);
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
-        _gl.Enable(OpenGL.GL_DOUBLEBUFFER);
+        //_gl.Begin(OpenGL.GL_LINE_STRIP);
 
-        _gl.Begin(OpenGL.GL_LINE_STRIP);
+        //foreach (var point in _path)
+        //{
+        //    _gl.Color(1f, 1f, 1f, 1f);
+        //    _gl.Vertex(point);
+        //}
 
-        foreach (var point in _path)
+        //_gl.End();
+
+        if (_carcassMode)
         {
-            _gl.Color(1f, 1f, 1f, 1f);
-            _gl.Vertex(point);
+            _figure.DrawCarcass(_gl);
+        }
+        else
+        {
+            _figure.Draw(_gl, true, _smooth);
         }
 
-        _gl.End();
-
-        //_figure.DrawCarcass(_gl);
-        _figure.Draw(_gl, true, true);
-        _figure.DrawNormals(_gl, true);
-
+        if (_showNormals)
+        {
+            _figure.DrawNormals(_gl, _smooth);
+        }
+        
         _gl.Flush();
     }
 
@@ -83,8 +95,12 @@ public partial class MainWindow : Window
     {
         _gl = args.OpenGL;
 
-        SetDepthBuffer();
-        SetDoubleBuffer();
+        _gl.Enable(OpenGL.GL_DEPTH_TEST);
+        BufferStockCheckBox.IsChecked = true;
+        _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
+
+        SetPerspectiveProjection(_gl);
+        PerspectiveProjectionCheckBox.IsChecked = true;
 
         _figure = _figureBuilder
             .CalculateSections(_section, _path, _scales)
@@ -94,18 +110,21 @@ public partial class MainWindow : Window
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
     {
-        //SetOrthographicProjection(_gl);
-        SetPerspectiveProjection(_gl);
+        _previousPosition = new Point(GlWindow.ActualWidth / 2, GlWindow.ActualHeight / 2);
 
-        _camera.Rotate(_previousPosition, _previousPosition);
-        _camera.ChangeCamera(_gl);
+        if (_projection == Projection.Orthographic)
+        {
+            SetOrthographicProjection(_gl);
+        }
+        else if(_projection == Projection.Perspective)
+        {
+            SetPerspectiveProjection(_gl);
+        }
 
         //SetLight(2);
-        SetLight(3);
-        SetMaterial(1);
-        SetTexture();
-
-        OpenGLDraw(sender, args);
+        //SetLight(3);
+        //SetMaterial(1);
+        //SetTexture();
     }
 
     private void GlWindowOnKeyDown(object sender, KeyEventArgs args)
@@ -164,7 +183,9 @@ public partial class MainWindow : Window
         gl.Ortho(-2, 2, -2, 2, 0.1, 100);
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         gl.LoadIdentity();
-        _previousPosition = new Point(GlWindow.ActualWidth / 2, GlWindow.ActualHeight / 2);
+
+        _camera.Rotate(_previousPosition, _previousPosition);
+        _camera.ChangeCamera(_gl);
     }
 
     private void SetPerspectiveProjection(OpenGL gl)
@@ -174,19 +195,9 @@ public partial class MainWindow : Window
         gl.Perspective(60f, GlWindow.ActualWidth / GlWindow.ActualHeight, 0.1f, 100f);
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         gl.LoadIdentity();
-        _previousPosition = new Point(GlWindow.ActualWidth / 2, GlWindow.ActualHeight / 2);
-    }
 
-    private void SetDepthBuffer()
-    {
-        //_gl.Disable(OpenGL.GL_DEPTH_TEST);
-        _gl.Enable(OpenGL.GL_DEPTH_TEST);
-    }
-
-    private void SetDoubleBuffer()
-    {
-        //_gl.Disable(OpenGL.GL_DOUBLEBUFFER);
-        //_gl.Enable(OpenGL.GL_DOUBLEBUFFER);
+        _camera.Rotate(_previousPosition, _previousPosition);
+        _camera.ChangeCamera(_gl);
     }
 
     private void SetLight(int number)
@@ -305,14 +316,14 @@ public partial class MainWindow : Window
 
         texture.Bind(_gl);
     }
-    private void BufferStockCheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
+    private void BufferStockCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Enable(OpenGL.GL_DEPTH_TEST);
     }
 
     private void DoubleBufferingCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Enable(OpenGL.GL_DOUBLEBUFFER);
     }
 
     private void LightingMaterialsCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -322,12 +333,12 @@ public partial class MainWindow : Window
 
     private void ObjectFrameCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-
+        _carcassMode = true;
     }
 
     private void NormalsCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-
+        _showNormals = true;
     }
 
     private void TexturesCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -337,27 +348,29 @@ public partial class MainWindow : Window
 
     private void OrthographicProjectionCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-
+        _projection = Projection.Orthographic;
+        SetOrthographicProjection(_gl);
     }
 
     private void PerspectiveProjectionCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-
+        _projection = Projection.Perspective;
+        SetPerspectiveProjection(_gl);
     }
 
     private void NormalsSmoothingToggleButton_Checked(object sender, RoutedEventArgs e)
     {
-
+        _smooth = true;
     }
 
     private void BufferStockCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Disable(OpenGL.GL_DEPTH_TEST);
     }
 
     private void DoubleBufferingCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
     }
 
     private void LightingMaterialsCheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -367,12 +380,12 @@ public partial class MainWindow : Window
 
     private void ObjectFrameCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-
+        _carcassMode = false;
     }
 
     private void NormalsCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-
+        _showNormals = false;
     }
 
     private void TexturesCheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -382,7 +395,7 @@ public partial class MainWindow : Window
 
     private void NormalsSmoothingToggleButton_Unchecked(object sender, RoutedEventArgs e)
     {
-
+        _smooth = false;
     }
 
     private void OpenFileDialogButton_Click(object sender, RoutedEventArgs e)

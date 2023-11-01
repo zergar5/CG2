@@ -149,7 +149,6 @@ public class Figure
         gl.End();
     }
 
-    //TODO поиграться с координатами
     private void DrawNode(OpenGL gl, Section previousSection, Section section, Vector3[] previousNormals, Vector3[] normals, bool texture)
     {
         gl.Begin(OpenGL.GL_TRIANGLES);
