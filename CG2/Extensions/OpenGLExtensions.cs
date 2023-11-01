@@ -1,6 +1,5 @@
-﻿using System.Numerics;
-using System;
-using SharpGL;
+﻿using SharpGL;
+using System.Numerics;
 
 namespace CG2.Extensions;
 

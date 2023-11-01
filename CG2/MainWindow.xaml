@@ -14,10 +14,10 @@
 
     <Grid Background="white" Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1000"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1000"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="GlWindow"
@@ -280,19 +280,19 @@
                             <StackPanel>
                                 <RadioButton    x:Name="EmeraldMaterialRadioButton"
                                                 Checked="EmeraldMaterialRadioButton_Checked"
-                                                Unchecked="EmeraldMaterialRadioButton_Unchecked">Изумруд</RadioButton>
+                                                >Изумруд</RadioButton>
                                 <RadioButton    x:Name="ObsidianMaterialRadioButton"
                                                 Checked="ObsidianMaterialRadioButton_Checked"
-                                                Unchecked="ObsidianMaterialRadioButton_Unchecked">Обсидиан</RadioButton>
+                                                >Обсидиан</RadioButton>
                                 <RadioButton    x:Name="GoldMaterialRadioButton"
                                                 Checked="GoldMaterialRadioButton_Checked"
-                                                Unchecked="GoldMaterialRadioButton_Unchecked">Золото</RadioButton>
+                                                >Золото</RadioButton>
                                 <RadioButton    x:Name="WhitePlasticMaterialRadioButton"
                                                 Checked="WhitePlasticMaterialRadioButton_Checked"
-                                                Unchecked="WhitePlasticMaterialRadioButton_Unchecked">Белый пластик</RadioButton>
+                                                >Белый пластик</RadioButton>
                                 <RadioButton    x:Name="RedPlasticMaterialRadioButton"
                                                 Checked="RedPlasticMaterialRadioButton_Checked"
-                                                Unchecked="RedPlasticMaterialRadioButton_Unchecked">Красный пластик</RadioButton>
+                                                >Красный пластик</RadioButton>
                             </StackPanel>
                         </Expander>
                         <Expander    Header="Текстуры"
@@ -305,19 +305,10 @@
                             <StackPanel>
                                 <RadioButton    x:Name="FirstTextureRadioButton"
                                                 Checked="FirstTextureRadioButton_Checked"
-                                                Unchecked="FirstTextureRadioButton_Unchecked">1</RadioButton>
+                                                >1</RadioButton>
                                 <RadioButton    x:Name="SecondTextureRadioButton"
                                                 Checked="SecondTextureRadioButton_Checked"
-                                                Unchecked="SecondTextureRadioButton_Unchecked">2</RadioButton>
-                                <RadioButton    x:Name="ThirdTextureRadioButton"
-                                                Checked="ThirdTextureRadioButton_Checked"
-                                                Unchecked="ThirdTextureRadioButton_Unchecked">3</RadioButton>
-                                <RadioButton    x:Name="FourthTextureRadioButton"
-                                                Checked="FourthTextureRadioButton_Checked"
-                                                Unchecked="FourthTextureRadioButton_Unchecked">4</RadioButton>
-                                <RadioButton    x:Name="FithTextureRadioButton"
-                                                Checked="FithTextureRadioButton_Checked"
-                                                Unchecked="FithTextureRadioButton_Unchecked">5</RadioButton>
+                                                >2</RadioButton>                                
                             </StackPanel>
                         </Expander>
                     </Grid>

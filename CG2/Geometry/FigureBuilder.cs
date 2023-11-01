@@ -1,9 +1,5 @@
-﻿using System.Numerics;
-using System.Windows.Media.Media3D;
-using CG2.Extensions;
-using CG2.Models.Figure;
-using SharpGL;
-using SharpGL.SceneGraph;
+﻿using CG2.Models.Figure;
+using System.Numerics;
 
 namespace CG2.Geometry;
 
@@ -56,7 +52,7 @@ public class FigureBuilder
 
         _texCoords = new Vector2[section.Length];
         _mapper2D.Start(section);
-        
+
         for (var i = 0; i < section.Length; i++)
         {
             _texCoords[i] = _mapper2D.Lerp(section[i]);

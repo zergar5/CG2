@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Transactions;
-using CG2.Extensions;
-using SharpGL.SceneGraph;
 
 namespace CG2.Models.Figure;
 

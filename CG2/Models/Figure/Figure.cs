@@ -1,10 +1,6 @@
-﻿using System;
-using System.Numerics;
-using System.Reflection;
-using CG2.Extensions;
+﻿using CG2.Extensions;
 using SharpGL;
-using SharpGL.SceneGraph;
-using SharpGL.SceneGraph.Assets;
+using System.Numerics;
 
 namespace CG2.Models.Figure;
 
