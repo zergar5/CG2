@@ -9,17 +9,12 @@ namespace CG2.Geometry;
 
 public class FigureBuilder
 {
-    private readonly ModelViewTransformations _modelViewTransformations;
     private Section[] _sections;
     private Vector3[][] _normals;
     private Vector3[][] _smoothNormals;
     private Vector3[] _path;
-    private Vector3[] _scales;
+    private Vector2[] _scales;
 
-    public FigureBuilder(ModelViewTransformations modelViewTransformations)
-    {
-        _modelViewTransformations = modelViewTransformations;
-    }
 
     public Figure Build()
     {
@@ -31,7 +26,7 @@ public class FigureBuilder
         return new Figure(_sections, _smoothNormals, _path);
     }
 
-    public FigureBuilder CalculateSections(Vector2[] section, Vector3[] path, Vector3[] scales)
+    public FigureBuilder CalculateSections(Vector2[] section, Vector3[] path, Vector2[] scales)
     {
         _sections = new Section[path.Length];
         _path = path;
@@ -130,7 +125,7 @@ public class FigureBuilder
         return this;
     }
 
-    private Section CalculateBeginning(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector3 scales)
+    private Section CalculateBeginning(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector2 scales)
     {
         var sign = nextDirection.Y < direction.Y ? 1 : -1;
         var crossVector = Vector3.Cross(direction, nextDirection) * sign;
@@ -161,7 +156,7 @@ public class FigureBuilder
         return section;
     }
 
-    private Section CalculateNode(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector3 scales)
+    private Section CalculateNode(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector2 scales)
     {
         var sign = nextDirection.Y < direction.Y ? 1 : -1;
         var crossVector = Vector3.Cross(direction, nextDirection) * sign;
@@ -189,11 +184,10 @@ public class FigureBuilder
 
         section.Translate(point);
         
-
         return section;
     }
 
-    private Section CalculateEnd(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector3 scales)
+    private Section CalculateEnd(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector2 scales)
     {
         var sign = nextDirection.Y < direction.Y ? 1 : -1;
         var crossVector = Vector3.Cross(direction, nextDirection) * sign;

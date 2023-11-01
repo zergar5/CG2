@@ -27,9 +27,9 @@ public class Figure
         {
             DrawBeginningSmooth(gl, texture);
 
-            for (var i = 1; i < _sections.Length - 1; i++)
+            for (var i = 1; i < _sections.Length; i++)
             {
-                DrawNodeSmooth(gl, _sections[i - 1], _sections[i], _normals[i], texture);
+                DrawNodeSmooth(gl, _sections[i - 1], _sections[i], _normals[i-1], _normals[i], texture);
             }
 
             DrawEndSmooth(gl, texture);
@@ -316,12 +316,13 @@ public class Figure
         gl.End();
     }
 
-    private void DrawNodeSmooth(OpenGL gl, Section previousSection, Section section, Vector3[] normals, bool texture)
+    private void DrawNodeSmooth(OpenGL gl, Section previousSection, Section section, Vector3[] previousNormals, Vector3[] normals, bool texture)
     {
         gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
 
         for (var i = 0; i < section.Count; i++)
         {
+            gl.Normal(previousNormals[i]);
             gl.Color(1f, 0f, 0f);
             gl.Vertex(previousSection[i]);
 
@@ -330,6 +331,7 @@ public class Figure
             gl.Vertex(section[i]);
         }
 
+        gl.Normal(previousNormals[0]);
         gl.Color(1f, 0f, 0f);
         gl.Vertex(previousSection[0]);
 
@@ -342,27 +344,6 @@ public class Figure
 
     private void DrawEndSmooth(OpenGL gl, bool texture)
     {
-        gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
-
-        for (var i = 0; i < _sections[^1].Count; i++)
-        {
-            gl.Normal(_normals[^2][i]);
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(_sections[^2][i]);
-
-            gl.Color(1f, 0f, 0f);
-            gl.Vertex(_sections[^1][i]);
-        }
-
-        gl.Normal(_normals[^2][0]);
-        gl.Color(1f, 0f, 0f);
-        gl.Vertex(_sections[^2][0]);
-
-        gl.Color(1f, 0f, 0f);
-        gl.Vertex(_sections[^1][0]);
-
-        gl.End();
-
         gl.Begin(OpenGL.GL_POLYGON);
 
         for (var i = 0; i < _sections[^1].Count; i++)

@@ -30,7 +30,7 @@ public partial class MainWindow : Window
     private Figure _figure;
     private Vector2[] _section;
     private Vector3[] _path;
-    private Vector3[] _scales;
+    private Vector2[] _scales;
     private Point _previousPosition;
 
     public MainWindow()
@@ -40,18 +40,19 @@ public partial class MainWindow : Window
         _section = new Vector2[]
         {
             new(-0.2f, -0.2f), new(0.2f, -0.2f), new(0, 1)
+            //new(-0.1f, -0.3f), new(0.2f, -0.3f), new(0.2f, -0.15f), new(0.1f, -0.15f), new(0.1f, 0.15f), new(0.2f, 0.15f), new(0.2f, 0.3f), new(-0.1f, 0.3f)
         };
         _path = new Vector3[]
         {
             new(0, 0, 0), new(1, 0, 0), new(2, 1, 0)
         };
-        _scales = new Vector3[]
+        _scales = new Vector2[]
         {
-            new(1, 1, 1), new(0.2f, 0.2f, 0.2f), new(1f, 1f, 1f)
+            new(1f, 1f), new(1f, 1f), new(1f, 1f)
         };
         GlWindow.FrameRate = 60;
         _camera = new Camera();
-        _figureBuilder = new FigureBuilder(new ModelViewTransformations());
+        _figureBuilder = new FigureBuilder();
     }
 
     private void OpenGLDraw(object sender, OpenGLRoutedEventArgs args)
@@ -69,6 +70,7 @@ public partial class MainWindow : Window
 
         _gl.End();
 
+        //_figure.DrawCarcass(_gl);
         _figure.Draw(_gl, false, true);
         _figure.DrawNormals(_gl, true);
 
