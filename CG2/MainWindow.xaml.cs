@@ -375,4 +375,14 @@ public partial class MainWindow : Window
 
         _texture.Bind(_gl);
     }
+
+    private void NoMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void NoTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

@@ -41,7 +41,7 @@
             <Border
                 Padding="10, 10, 0, 0"
                 Margin="0"
-                Width="Auto"
+                Width="410"
                 Background="white"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Right"
@@ -54,14 +54,16 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <Grid
                             Grid.Row="1"
                             Grid.Column="1"
+                            HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
                     >
-                        <Grid.RowDefinitions>
+                        <Grid.RowDefinitions> 
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -74,8 +76,6 @@
                                     Margin="0, 0, 0, 10"                                    
                                     Text="Название файла"
                                     FontSize="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
                     />
                         <Button x:Name="OpenFileDialogButton"
                                 Click="OpenFileDialogButton_Click"
@@ -88,8 +88,9 @@
                     </Grid>
                     
                     <GroupBox Header="Выберете режимы"
-                              Grid.Column="0"
+                              Grid.ColumnSpan="1"
                               Grid.Row="0"
+                              Width="190"
                               Height="Auto"
                               Margin="0, 0, 10, 10"
                               Style="{StaticResource MaterialDesignCardGroupBox}"
@@ -149,6 +150,7 @@
                     <GroupBox Header="Показать"
                               Grid.Column="1"
                               Grid.Row="0"
+                              Width="190"
                               Height="Auto"
                               Margin="0, 0, 10, 10"
                               Style="{StaticResource MaterialDesignCardGroupBox}"
@@ -193,7 +195,8 @@
                     </GroupBox>
                     <GroupBox   Header="Выберете проекцию"
                                 Grid.Column="0"
-                                Grid.Row="1"                                
+                                Grid.Row="1"
+                                Width="190"
                                 Margin="0, 0, 10, 10"
                                 Style="{StaticResource MaterialDesignCardGroupBox}"
                     >
@@ -203,8 +206,8 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label 
                                 Content="Ортографическая"
@@ -215,7 +218,7 @@
                                             Checked="OrthographicProjectionCheckBox_Checked"
                                             GroupName="Проекция"
                                             Grid.Column="2"
-                                            Margin="40, 5, 0, 0"
+                                            Width="20"
                             />
                             <Label 
                                 Content="Перспективная"
@@ -228,7 +231,6 @@
                                             GroupName="Проекция"                                            
                                             Grid.Row="1"
                                             Grid.Column="2"
-                                            Margin="40, 5, 0, 0"
                                             Width="20"
                             />
 
@@ -236,7 +238,7 @@
                     </GroupBox>
                     <Grid
                         Grid.Row="3"
-                        Grid.ColumnSpan="2">
+                        Grid.ColumnSpan="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -245,78 +247,80 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Expander   Header="Освещение"
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Margin="0, 0, 10, 10"
-                                    Style="{StaticResource MaterialDesignExpander}"
+                        <StackPanel
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"
+                            Width="400"
+                        >
+                            <Expander   Header="Освещение"
+                                        Margin="0, 0, 10, 10"
+                                        BorderBrush="#FF673AB7" BorderThickness="2"
+                                        
                     >
-                            <StackPanel>
-                                <CheckBox   x:Name="BackLightCheckBox"
+                                <StackPanel>
+                                    <CheckBox   x:Name="BackLightCheckBox"
                                             Checked="BackLightCheckBox_Checked"
                                             Unchecked="BackLightCheckBox_Unchecked"
                                 >Фоновый</CheckBox>
-                                <CheckBox   x:Name="PointLightCheckBox"
+                                    <CheckBox   x:Name="PointLightCheckBox"
                                             Checked="PointLightCheckBox_Checked"
                                             Unchecked="PointLightCheckBox_Unchecked">Точечный</CheckBox>
-                                <CheckBox   x:Name="DirectLightCheckBox"
+                                    <CheckBox   x:Name="DirectLightCheckBox"
                                             Checked="DirectLightCheckBox_Checked"
                                             Unchecked="DirectLightCheckBox_Unchecked">Направленный</CheckBox>
-                                <CheckBox   x:Name="SearchLightCheckBox"
+                                    <CheckBox   x:Name="SearchLightCheckBox"
                                             Checked="SearchLightCheckBox_Checked"
                                             Unchecked="SearchLightCheckBox_Unchecked">Прожектор</CheckBox>
-                                <CheckBox   x:Name="SearchLight2CheckBox"
+                                    <CheckBox   x:Name="SearchLight2CheckBox"
                                             Checked="SearchLight2CheckBox_Checked"
                                             Unchecked="SearchLight2CheckBox_Unchecked">Прожектор с убыванием интенсивности</CheckBox>
-                            </StackPanel>
-                        </Expander>
-                        <Expander   Header="Материалы"
-                                    Grid.Row="0"
-                                    Grid.Column="1"
+                                </StackPanel>
+                            </Expander>
+                            <Expander   Header="Материалы"
+                                    BorderBrush="#FF673AB7" BorderThickness="2"
                                     Margin="0, 0, 10, 10"
                                     Width="Auto"
-                                    Style="{StaticResource MaterialDesignExpander}"
                     >
-                            <StackPanel>
-                                <RadioButton    x:Name="NoMaterialRadioButton"
+                                <StackPanel>
+                                    <RadioButton    x:Name="NoMaterialRadioButton"
                                                 Checked="NoMaterialRadioButton_Checked"
                                                 >Нет материала</RadioButton>
-                                <RadioButton    x:Name="EmeraldMaterialRadioButton"
+                                    <RadioButton    x:Name="EmeraldMaterialRadioButton"
                                                 Checked="EmeraldMaterialRadioButton_Checked"
                                                 >Изумруд</RadioButton>
-                                <RadioButton    x:Name="ObsidianMaterialRadioButton"
+                                    <RadioButton    x:Name="ObsidianMaterialRadioButton"
                                                 Checked="ObsidianMaterialRadioButton_Checked"
                                                 >Обсидиан</RadioButton>
-                                <RadioButton    x:Name="GoldMaterialRadioButton"
+                                    <RadioButton    x:Name="GoldMaterialRadioButton"
                                                 Checked="GoldMaterialRadioButton_Checked"
                                                 >Золото</RadioButton>
-                                <RadioButton    x:Name="WhitePlasticMaterialRadioButton"
+                                    <RadioButton    x:Name="WhitePlasticMaterialRadioButton"
                                                 Checked="WhitePlasticMaterialRadioButton_Checked"
                                                 >Белый пластик</RadioButton>
-                                <RadioButton    x:Name="RedPlasticMaterialRadioButton"
+                                    <RadioButton    x:Name="RedPlasticMaterialRadioButton"
                                                 Checked="RedPlasticMaterialRadioButton_Checked"
                                                 >Красный пластик</RadioButton>
-                            </StackPanel>
-                        </Expander>
-                        <Expander    Header="Текстуры"
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    Margin="0, 0, 10, 10"
-                                    Width="Auto"
-                                    Style="{StaticResource MaterialDesignExpander}"
+                                </StackPanel>
+                            </Expander>
+                            <Expander    Header="Текстуры"
+                                        Margin="0, 0, 10, 10"
+                                        Width="Auto"
+                                         BorderBrush="#FF673AB7" BorderThickness="2"
                     >
-                            <StackPanel>
-                                <RadioButton    x:Name="NoTextureRadioButton"
+                                <StackPanel>
+                                    <RadioButton    x:Name="NoTextureRadioButton"
                                                 Checked="NoTextureRadioButton_Checked"
                                                 >Нет текстуры</RadioButton>
-                                <RadioButton    x:Name="FirstTextureRadioButton"
+                                    <RadioButton    x:Name="FirstTextureRadioButton"
                                                 Checked="FirstTextureRadioButton_Checked"
                                                 >1</RadioButton>
-                                <RadioButton    x:Name="SecondTextureRadioButton"
+                                    <RadioButton    x:Name="SecondTextureRadioButton"
                                                 Checked="SecondTextureRadioButton_Checked"
-                                                >2</RadioButton>                                
-                            </StackPanel>
-                        </Expander>
+                                                >2</RadioButton>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                        
                     </Grid>
                     
                     <Grid
