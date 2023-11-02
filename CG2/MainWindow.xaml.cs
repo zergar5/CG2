@@ -50,36 +50,7 @@ public partial class MainWindow : Window
         _camera = new Camera();
         _figureBuilder = new FigureBuilder(new Mapper2D());
     }
-
-        private void DoubleBufferingCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void LightingMaterialsCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ObjectFrameCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-
-        if (_carcassMode)
-        {
-            _figure.DrawCarcass(_gl);
-        }
-        else
-        {
-            _figure.Draw(_gl, true, _smooth);
-        }
-
-        if (_showNormals)
-        {
-            _figure.DrawNormals(_gl, _smooth);
-        }
-
-        }
-
+     
         private void TexturesCheckBox_Checked(object sender, RoutedEventArgs e)
         {
 
@@ -112,20 +83,6 @@ public partial class MainWindow : Window
         }
     }
 
-        private void NormalsSmoothingToggleButton_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BufferStockCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void DoubleBufferingCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-
-        }
 
     private void SetOrthographicProjection(OpenGL gl)
     {

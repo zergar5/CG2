@@ -278,6 +278,9 @@
                                     Style="{StaticResource MaterialDesignExpander}"
                     >
                             <StackPanel>
+                                <RadioButton    x:Name="NoMaterialRadioButton"
+                                                Checked="NoMaterialRadioButton_Checked"
+                                                >Нет материала</RadioButton>
                                 <RadioButton    x:Name="EmeraldMaterialRadioButton"
                                                 Checked="EmeraldMaterialRadioButton_Checked"
                                                 >Изумруд</RadioButton>
@@ -303,6 +306,9 @@
                                     Style="{StaticResource MaterialDesignExpander}"
                     >
                             <StackPanel>
+                                <RadioButton    x:Name="NoTextureRadioButton"
+                                                Checked="NoTextureRadioButton_Checked"
+                                                >Нет текстуры</RadioButton>
                                 <RadioButton    x:Name="FirstTextureRadioButton"
                                                 Checked="FirstTextureRadioButton_Checked"
                                                 >1</RadioButton>
