@@ -1,20 +1,20 @@
-﻿using System;
+﻿using CG2.Extensions;
+using SharpGL;
+using System;
 using System.Numerics;
 using System.Windows;
-using CG2.Extensions;
-using SharpGL;
 
 namespace CG2.Models;
 
 public class Camera
 {
-    private Vector3 _cameraPosition = new (0f, 0f, 3f);
+    private Vector3 _cameraPosition = new(0f, 0f, 3f);
     private Vector3 _cameraFront = Vector3.UnitZ;
     private Vector3 _cameraUp = Vector3.UnitY;
 
     private float _yaw = -90.0f;
     private float _pitch = 0f;
-    private float _speed = 2.5f * 1f/60f;
+    private float _speed = 2.5f * 1f / 60f;
 
     private const float Sensitivity = 0.15f;
 
@@ -53,7 +53,7 @@ public class Camera
 
     public void MoveUp()
     {
-        _cameraPosition +=  _speed * Vector3.UnitY;
+        _cameraPosition += _speed * Vector3.UnitY;
     }
 
     public void MoveDown()

@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Transactions;
-using CG2.Extensions;
-using SharpGL.SceneGraph;
 
 namespace CG2.Models.Figure;
 
@@ -39,13 +36,12 @@ public class Section
         }
     }
 
-    public void Scale(float scaleX, float scaleY, float scaleZ)
+    public void Scale(Vector2 scales)
     {
         for (var i = 0; i < _vertices3D.Length; i++)
         {
-            _vertices3D[i].X *= scaleX;
-            _vertices3D[i].Y *= scaleY;
-            _vertices3D[i].Z *= scaleZ;
+            _vertices3D[i].X *= scales.X;
+            _vertices3D[i].Y *= scales.Y;
         }
     }
 

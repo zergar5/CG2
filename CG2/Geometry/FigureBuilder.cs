@@ -1,59 +1,155 @@
-﻿using System.Numerics;
-using CG2.Extensions;
-using CG2.Models.Figure;
-using SharpGL;
-using SharpGL.SceneGraph;
+﻿using CG2.Models.Figure;
+using System.Numerics;
 
 namespace CG2.Geometry;
 
 public class FigureBuilder
 {
-    private readonly ModelViewTransformations _modelViewTransformations;
+    private readonly Mapper2D _mapper2D;
     private Section[] _sections;
+    private Vector3[][] _normals;
+    private Vector3[][] _smoothNormals;
+    private Vector3[] _path;
+    private Vector2[] _texCoords;
 
-    public FigureBuilder(ModelViewTransformations modelViewTransformations)
+    public FigureBuilder(Mapper2D mapper2D)
     {
-        _modelViewTransformations = modelViewTransformations;
+        _mapper2D = mapper2D;
     }
 
-    public Figure Build(Vector2[] section, Vector3[] path)
+    public Figure Build()
+    {
+        return new Figure(_sections, _normals, _smoothNormals, _path, _texCoords);
+    }
+
+    public FigureBuilder CalculateSections(Vector2[] section, Vector3[] path, Vector2[] scales)
     {
         _sections = new Section[path.Length];
+        _path = path;
 
         for (var i = 0; i < _sections.Length; i++)
         {
             _sections[i] = new Section(section);
         }
 
-        _sections[0] = BuildBeginning(_sections[0], path[0] - path[1], path[1] - path[2], path[0]);
+        var direction = path[0] - path[1];
+        var nextDirection = path[1] - path[2];
+
+        _sections[0] = CalculateBeginning(_sections[0], direction, nextDirection, path[0], scales[0]);
 
         for (var i = 1; i < _sections.Length - 1; i++)
         {
-            _sections[i] = BuildNode(_sections[i], path[i - 1] - path[i], path[i] - path[i + 1], path[i]);
+            direction = Vector3.Normalize(path[i - 1] - path[i]);
+            nextDirection = Vector3.Normalize(path[i] - path[i + 1]);
+
+            _sections[i] = CalculateNode(_sections[i], direction, nextDirection, path[i], scales[i]);
         }
 
-        _sections[^1] = BuildEnd(_sections[^1], path[^3] - path[^2], path[^2] - path[^1], path[^1]);
+        direction = path[^3] - path[^2];
+        nextDirection = path[^2] - path[^1];
 
-        return new Figure(_sections);
+        _sections[^1] = CalculateEnd(_sections[^1], nextDirection, direction, path[^1], scales[^1]);
+
+        _texCoords = new Vector2[section.Length];
+        _mapper2D.Start(section);
+
+        for (var i = 0; i < section.Length; i++)
+        {
+            _texCoords[i] = _mapper2D.Lerp(section[i]);
+        }
+
+        _mapper2D.Finish();
+
+        return this;
     }
 
-    private Section BuildBeginning(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point)
+    public FigureBuilder CalculateNormals()
     {
-        var crossVector = Vector3.Cross(direction, nextDirection);
+        _normals = new Vector3[_sections.Length + 1][];
 
-        var directionY0 = direction with { Y = 0 };
-        var crossVectorY0 = crossVector with { Y = 0 };
+        _normals[0] = new Vector3[1];
+        var vector01 = _sections[0][1] - _sections[0][0];
+        var vector02 = _sections[0][2] - _sections[0][0];
+        _normals[0][0] = Vector3.Normalize(Vector3.Cross(vector01, vector02));
 
-        var xAngle = directionY0.Angle(direction);
-        var yAngle = crossVectorY0.Angle(crossVector);
-        var zAngle = Vector3.UnitZ.Angle(directionY0);
+        for (var i = 1; i < _sections.Length; i++)
+        {
+            _normals[i] = new Vector3[_sections[i].Count];
+
+            for (var j = 0; j < _sections[i].Count - 1; j++)
+            {
+                vector01 = _sections[i][j] - _sections[i - 1][j];
+                vector02 = _sections[i - 1][j + 1] - _sections[i - 1][j];
+                _normals[i][j] = Vector3.Normalize(Vector3.Cross(vector01, vector02));
+            }
+
+            vector01 = _sections[i][^1] - _sections[i - 1][^1];
+            vector02 = _sections[i - 1][0] - _sections[i - 1][^1];
+            _normals[i][^1] = Vector3.Normalize(Vector3.Cross(vector01, vector02));
+        }
+
+        _normals[^1] = new Vector3[1];
+        vector01 = _sections[^1][1] - _sections[^1][0];
+        vector02 = _sections[^1][2] - _sections[^1][0];
+        _normals[^1][0] = -Vector3.Normalize(Vector3.Cross(vector01, vector02));
+
+        _smoothNormals = new Vector3[_sections.Length][];
+        _smoothNormals[0] = new Vector3[_sections[0].Count];
+
+        _smoothNormals[0][0] = Vector3.Normalize(_normals[0][0] + _normals[1][0] + _normals[1][^1]);
+
+        for (var i = 1; i < _sections[0].Count; i++)
+        {
+            _smoothNormals[0][i] = Vector3.Normalize(_normals[0][0] + _normals[1][i] + _normals[1][i - 1]);
+        }
+
+        for (var i = 1; i < _sections.Length - 1; i++)
+        {
+            _smoothNormals[i] = new Vector3[_sections[i].Count];
+
+            _smoothNormals[i][0] = Vector3.Normalize(_normals[i][0] + _normals[i][^1] + _normals[i + 1][0] + _normals[i + 1][^1]);
+
+            for (var j = 1; j < _sections[i].Count; j++)
+            {
+                _smoothNormals[i][j] = Vector3.Normalize(_normals[i][j] + _normals[i][j - 1] + _normals[i + 1][j] + _normals[i + 1][j - 1]);
+            }
+        }
+
+        _smoothNormals[^1] = new Vector3[_sections[^1].Count];
+
+        _smoothNormals[^1][0] = Vector3.Normalize(_normals[^1][0] + _normals[^2][0] + _normals[^2][^1]);
+
+        for (var i = 1; i < _sections[^1].Count; i++)
+        {
+            _smoothNormals[^1][i] = Vector3.Normalize(_normals[^1][0] + _normals[^2][i] + _normals[^2][i - 1]);
+        }
+
+        return this;
+    }
+
+    private Section CalculateBeginning(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector2 scales)
+    {
+        var sign = nextDirection.Y < direction.Y ? 1 : -1;
+        var crossVector = Vector3.Cross(direction, nextDirection) * sign;
+
+        var newX = Vector3.Normalize(crossVector);
+        var newY = Vector3.Normalize(Vector3.Cross(direction, crossVector));
+        var newZ = Vector3.Normalize(direction);
+
+        section.Scale(scales);
 
         for (var i = 0; i < section.Count; i++)
         {
             var vertex = section[i];
-            vertex = _modelViewTransformations.RotateByX(vertex, xAngle);
-            vertex = _modelViewTransformations.RotateByY(vertex, zAngle);
-            vertex = _modelViewTransformations.RotateByZ(vertex, yAngle);
+
+            var x = newX.X * vertex.X + newY.X * vertex.Y + newZ.X * vertex.Z;
+            var y = newX.Y * vertex.X + newY.Y * vertex.Y + newZ.Y * vertex.Z;
+            var z = newX.Z * vertex.X + newY.Z * vertex.Y + newZ.Z * vertex.Z;
+
+            vertex.X = x;
+            vertex.Y = y;
+            vertex.Z = z;
+
             section[i] = vertex;
         }
 
@@ -62,24 +158,29 @@ public class FigureBuilder
         return section;
     }
 
-    private Section BuildNode(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point)
+    private Section CalculateNode(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector2 scales)
     {
-        var crossVector = Vector3.Cross(direction, nextDirection);
+        var sign = nextDirection.Y < direction.Y ? 1 : -1;
+        var crossVector = Vector3.Cross(direction, nextDirection) * sign;
 
-        var directionY0 = direction with { Y = 0 };
-        var crossVectorY0 = crossVector with { Y = 0 };
+        var newX = Vector3.Normalize(crossVector);
+        var newZ = Vector3.Normalize((direction + nextDirection) / 2);
+        var newY = Vector3.Normalize(Vector3.Cross(newZ, crossVector));
 
-        var xAngle = directionY0.Angle(direction);
-        var yAngle = crossVectorY0.Angle(crossVector);
-        var zAngle = Vector3.UnitZ.Angle(directionY0);
-        var directionAngle = direction.Angle(nextDirection);
+        section.Scale(scales);
 
         for (var i = 0; i < section.Count; i++)
         {
             var vertex = section[i];
-            vertex = _modelViewTransformations.RotateByX(vertex, xAngle);
-            vertex = _modelViewTransformations.RotateByY(vertex, zAngle + directionAngle / 2);
-            vertex = _modelViewTransformations.RotateByZ(vertex, yAngle);
+
+            var x = newX.X * vertex.X + newY.X * vertex.Y + newZ.X * vertex.Z;
+            var y = newX.Y * vertex.X + newY.Y * vertex.Y + newZ.Y * vertex.Z;
+            var z = newX.Z * vertex.X + newY.Z * vertex.Y + newZ.Z * vertex.Z;
+
+            vertex.X = x;
+            vertex.Y = y;
+            vertex.Z = z;
+
             section[i] = vertex;
         }
 
@@ -88,23 +189,29 @@ public class FigureBuilder
         return section;
     }
 
-    private Section BuildEnd(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point)
+    private Section CalculateEnd(Section section, Vector3 direction, Vector3 nextDirection, Vector3 point, Vector2 scales)
     {
-        var crossVector = Vector3.Cross(direction, nextDirection);
+        var sign = nextDirection.Y < direction.Y ? 1 : -1;
+        var crossVector = Vector3.Cross(direction, nextDirection) * sign;
 
-        var directionY0 = direction with { Y = 0 };
-        var crossVectorY0 = crossVector with { Y = 0 };
+        var newX = Vector3.Normalize(crossVector);
+        var newY = Vector3.Normalize(Vector3.Cross(direction, crossVector));
+        var newZ = Vector3.Normalize(direction);
 
-        var xAngle = directionY0.Angle(direction);
-        var yAngle = crossVectorY0.Angle(crossVector);
-        var zAngle = Vector3.UnitZ.Angle(directionY0);
+        section.Scale(scales);
 
         for (var i = 0; i < section.Count; i++)
         {
             var vertex = section[i];
-            vertex = _modelViewTransformations.RotateByX(vertex, xAngle);
-            vertex = _modelViewTransformations.RotateByY(vertex, zAngle);
-            vertex = _modelViewTransformations.RotateByZ(vertex, yAngle);
+
+            var x = newX.X * vertex.X + newY.X * vertex.Y + newZ.X * vertex.Z;
+            var y = newX.Y * vertex.X + newY.Y * vertex.Y + newZ.Y * vertex.Z;
+            var z = newX.Z * vertex.X + newY.Z * vertex.Y + newZ.Z * vertex.Z;
+
+            vertex.X = x;
+            vertex.Y = y;
+            vertex.Z = z;
+
             section[i] = vertex;
         }
 
