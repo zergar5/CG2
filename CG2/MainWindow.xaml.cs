@@ -7,6 +7,7 @@ using SharpGL.SceneGraph.Assets;
 using SharpGL.WPF;
 using System.Drawing;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using Point = System.Windows.Point;
@@ -29,6 +30,12 @@ public partial class MainWindow : Window
     private Projection _projection;
     private int _materialNumber;
     private readonly Texture _texture = new();
+    private bool _textureMode;
+    private readonly float[] _direction = { -1f, 1f, 0f, 0f };
+    private readonly float[] _position = { 1f, 1f, 500f, 1f };
+    private readonly float[] _spotlightPosition = { 0.5f, 0.375f, 3f, 1f };
+    private readonly float[] _spotlightDirection = { 0f, 0f, -3f, 0f };
+    private readonly float[] _positionIntensity = { 1f, 1f, -500f, 1f };
 
     public MainWindow()
     {
@@ -59,19 +66,45 @@ public partial class MainWindow : Window
 
         _camera.ChangeCamera(_gl);
 
-        //_gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1f, -1f, 0f, 1f });
+        _gl.Disable(OpenGL.GL_LIGHTING);
 
-        _gl.Begin(OpenGL.GL_LINE_STRIP);
-
-        foreach (var point in _path)
+        if (_gl.IsEnabled(OpenGL.GL_LIGHT0))
         {
-            _gl.Color(1f, 1f, 1f, 1f);
-            _gl.Vertex(point);
+            _gl.Enable(OpenGL.GL_LIGHTING);
         }
 
-        _gl.End();
+        if (_gl.IsEnabled(OpenGL.GL_LIGHT1))
+        {
+            _gl.Enable(OpenGL.GL_LIGHTING);
+
+            _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, _direction);
+        }
+
+        if (_gl.IsEnabled(OpenGL.GL_LIGHT2))
+        {
+            _gl.Enable(OpenGL.GL_LIGHTING);
+
+            _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, _position);
+        }
+
+        if (_gl.IsEnabled(OpenGL.GL_LIGHT3))
+        {
+            _gl.Enable(OpenGL.GL_LIGHTING);
+
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_POSITION, _spotlightPosition);
+            _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_DIRECTION, _spotlightDirection);
+        }
+
+        if (_gl.IsEnabled(OpenGL.GL_LIGHT4))
+        {
+            _gl.Enable(OpenGL.GL_LIGHTING);
+
+            _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_POSITION, _positionIntensity);
+        }
 
         SetMaterial(_materialNumber);
+
+        _figure.DrawPath(_gl);
 
         if (_carcassMode)
         {
@@ -79,7 +112,7 @@ public partial class MainWindow : Window
         }
         else
         {
-            _figure.Draw(_gl, true, _smooth);
+            _figure.Draw(_gl, _textureMode, _smooth);
         }
 
         if (_showNormals)
@@ -96,14 +129,15 @@ public partial class MainWindow : Window
 
         _gl.Enable(OpenGL.GL_DEPTH_TEST);
         BufferStockCheckBox.IsChecked = true;
+
         _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
 
-        _gl.Enable(OpenGL.GL_LIGHTING);
-
-        InitLights();
+        //_gl.Enable(OpenGL.GL_COLOR_MATERIAL);
 
         SetPerspectiveProjection(_gl);
         PerspectiveProjectionCheckBox.IsChecked = true;
+
+        InitLights();
 
         _figure = _figureBuilder
             .CalculateSections(_section, _path, _scales)
@@ -189,7 +223,7 @@ public partial class MainWindow : Window
 
     private void InitLights()
     {
-        _gl.LightModel(OpenGL.GL_LIGHT_MODEL_TWO_SIDE, OpenGL.GL_FALSE);
+        _gl.LightModel(OpenGL.GL_LIGHT_MODEL_TWO_SIDE, OpenGL.GL_TRUE);
 
         _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new[] { 0.1f, 0.1f, 0.1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, new[] { 0f, 0f, 0f, 1f });
@@ -198,28 +232,23 @@ public partial class MainWindow : Window
         _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new[] { 0f, 0f, 1f, 0f });
 
         _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT2, OpenGL.GL_POSITION, new[] { 1f, -1f, 0f, 1f });
 
         _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_POSITION, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_EXPONENT, 30f);
-        _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_CUTOFF, 20f);
-        _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_DIRECTION, new[] { -1f, -1f, -1f, 0f });
+        _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_EXPONENT, 15f);
+        _gl.Light(OpenGL.GL_LIGHT3, OpenGL.GL_SPOT_CUTOFF, 30f);
 
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_AMBIENT, new[] { 0f, 0f, 0f, 1f });
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_DIFFUSE, new[] { 1f, 1f, 1f, 1f });
         _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_SPECULAR, new[] { 1f, 1f, 1f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_POSITION, new[] { 1f, -50f, 0f, 1f });
-        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_CONSTANT_ATTENUATION, 0f);
-        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_LINEAR_ATTENUATION, 5e-3f);
-        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_QUADRATIC_ATTENUATION, 0f);
+        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_CONSTANT_ATTENUATION, 1f);
+        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_LINEAR_ATTENUATION, 0.014f);
+        _gl.Light(OpenGL.GL_LIGHT4, OpenGL.GL_QUADRATIC_ATTENUATION, 0.0007f);
     }
 
     private void SetMaterial(int number)
@@ -379,12 +408,12 @@ public partial class MainWindow : Window
         _gl.Disable(OpenGL.GL_LIGHT3);
     }
 
-    private void SearchLight2CheckBox_Checked(object sender, RoutedEventArgs e)
+    private void PointLightIntensityCheckBox_Checked(object sender, RoutedEventArgs e)
     {
         _gl.Enable(OpenGL.GL_LIGHT4);
     }
 
-    private void SearchLight2CheckBox_Unchecked(object sender, RoutedEventArgs e)
+    private void PointLightIntensityCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
         _gl.Disable(OpenGL.GL_LIGHT4);
     }
@@ -424,6 +453,8 @@ public partial class MainWindow : Window
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
         _texture.Bind(_gl);
+
+        _textureMode = true;
     }
 
     private void SecondTextureRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -436,5 +467,7 @@ public partial class MainWindow : Window
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
         _texture.Bind(_gl);
+
+        _textureMode = true;
     }
 }

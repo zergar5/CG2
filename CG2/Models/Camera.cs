@@ -29,8 +29,6 @@ public class Camera
             _cameraPosition.X, _cameraPosition.Y, _cameraPosition.Z,
             cameraDir.X, cameraDir.Y, cameraDir.Z,
             _cameraUp.X, _cameraUp.Y, _cameraUp.Z);
-
-        
     }
 
     public void MoveRight()

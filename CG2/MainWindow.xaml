@@ -76,6 +76,7 @@
                                     FontSize="14"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
+                                    Focusable="False"
                     />
                         <Button x:Name="OpenFileDialogButton"
                                 Click="OpenFileDialogButton_Click"
@@ -84,6 +85,7 @@
                                 Grid.Row="1"
                                 Width="100"
                                 Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Focusable="False"
                         />
                     </Grid>
                     
@@ -93,6 +95,7 @@
                               Height="Auto"
                               Margin="0, 0, 10, 10"
                               Style="{StaticResource MaterialDesignCardGroupBox}"
+                              Focusable="False"
                     >
                         <Grid>
                             <Grid.RowDefinitions>
@@ -114,6 +117,7 @@
                                         Unchecked="BufferStockCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="0"
+                                        Focusable="False"
                     >
 
                             </CheckBox>
@@ -127,6 +131,7 @@
                                         Unchecked="DoubleBufferingCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="1"
+                                        Focusable="False"
                             />
                             <Label  Content="cглаживание нормалей"
                                     Grid.Row="2"
@@ -135,6 +140,7 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"  
                                     Style="{StaticResource MaterialDesignLabel}"
+                                    Focusable="False"
                         />
                             <CheckBox   x:Name="NormalsSmoothingCheckBox"
                                         Checked="NormalsSmoothingCheckBox_Checked"
@@ -143,6 +149,7 @@
                                         Grid.Column="0"
                                         Margin="0, 0, 5, 5"
                                         Width="30"
+                                        Focusable="False"
                         />                            
                         </Grid>
                     </GroupBox>
@@ -152,6 +159,7 @@
                               Height="Auto"
                               Margin="0, 0, 10, 10"
                               Style="{StaticResource MaterialDesignCardGroupBox}"
+                              Focusable="False"
                     >
                         <Grid>
                             <Grid.RowDefinitions>
@@ -168,12 +176,14 @@
                                     Grid.Column="1"
                                     Grid.Row="0"
                                     Style="{StaticResource MaterialDesignLabel}"
+                                    Focusable="False"
                             />
                             <CheckBox   x:Name="ObjectFrameCheckBox"
                                         Checked="ObjectFrameCheckBox_Checked"
                                         Unchecked="ObjectFrameCheckBox_Unchecked"
                                         Grid.Column="0"
                                         Grid.Row="0"
+                                        Focusable="False"
                             />
 
 
@@ -182,12 +192,14 @@
                                     Grid.Column="1"
                                     Grid.Row="1"
                                     Style="{StaticResource MaterialDesignLabel}"
+                                    Focusable="False"
                             />
                             <CheckBox x:Name="NormalsCheckBox"
                                       Checked="NormalsCheckBox_Checked"
                                       Unchecked="NormalsCheckBox_Unchecked"
                                       Grid.Column="0"
                                       Grid.Row="1"
+                                      Focusable="False"
                             />                            
                         </Grid>
                     </GroupBox>
@@ -196,6 +208,7 @@
                                 Grid.Row="1"                                
                                 Margin="0, 0, 10, 10"
                                 Style="{StaticResource MaterialDesignCardGroupBox}"
+                                Focusable="False"
                     >
                         <Grid>
                             <Grid.RowDefinitions>
@@ -210,18 +223,21 @@
                                 Content="Ортографическая"
                                 Grid.Column="0"
                                 Style="{StaticResource MaterialDesignLabel}"
+                                Focusable="False"
                             />
                             <RadioButton    x:Name="OrthographicProjectionCheckBox"
                                             Checked="OrthographicProjectionCheckBox_Checked"
                                             GroupName="Проекция"
                                             Grid.Column="2"
                                             Margin="40, 5, 0, 0"
+                                            Focusable="False"
                             />
                             <Label 
                                 Content="Перспективная"
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Style="{StaticResource MaterialDesignLabel}"
+                                Focusable="False"
                             />
                             <RadioButton    x:Name="PerspectiveProjectionCheckBox"
                                             Checked="PerspectiveProjectionCheckBox_Checked"                                
@@ -230,6 +246,7 @@
                                             Grid.Column="2"
                                             Margin="40, 5, 0, 0"
                                             Width="20"
+                                            Focusable="False"
                             />
 
                         </Grid>
@@ -250,24 +267,31 @@
                                     Grid.Column="0"
                                     Margin="0, 0, 10, 10"
                                     Style="{StaticResource MaterialDesignExpander}"
+                                    Focusable="False"
                     >
                             <StackPanel>
                                 <CheckBox   x:Name="BackLightCheckBox"
                                             Checked="BackLightCheckBox_Checked"
                                             Unchecked="BackLightCheckBox_Unchecked"
+                                            Focusable="False"
                                 >Фоновый</CheckBox>
                                 <CheckBox   x:Name="PointLightCheckBox"
                                             Checked="PointLightCheckBox_Checked"
-                                            Unchecked="PointLightCheckBox_Unchecked">Точечный</CheckBox>
+                                            Unchecked="PointLightCheckBox_Unchecked"
+                                            Focusable="False">Точечный</CheckBox>
+                                
                                 <CheckBox   x:Name="DirectLightCheckBox"
                                             Checked="DirectLightCheckBox_Checked"
-                                            Unchecked="DirectLightCheckBox_Unchecked">Направленный</CheckBox>
+                                            Unchecked="DirectLightCheckBox_Unchecked"
+                                            Focusable="False">Направленный</CheckBox>
                                 <CheckBox   x:Name="SearchLightCheckBox"
                                             Checked="SearchLightCheckBox_Checked"
-                                            Unchecked="SearchLightCheckBox_Unchecked">Прожектор</CheckBox>
-                                <CheckBox   x:Name="SearchLight2CheckBox"
-                                            Checked="SearchLight2CheckBox_Checked"
-                                            Unchecked="SearchLight2CheckBox_Unchecked">Прожектор с убыванием интенсивности</CheckBox>
+                                            Unchecked="SearchLightCheckBox_Unchecked"
+                                            Focusable="False">Прожектор</CheckBox>
+                                <CheckBox   x:Name="PointLightIntensityCheckBox"
+                                            Checked="PointLightIntensityCheckBox_Checked"
+                                            Unchecked="PointLightIntensityCheckBox_Unchecked"
+                                            Focusable="False">Точечный с убыванием интенсивности</CheckBox>
                             </StackPanel>
                         </Expander>
                         <Expander   Header="Материалы"
@@ -276,22 +300,28 @@
                                     Margin="0, 0, 10, 10"
                                     Width="Auto"
                                     Style="{StaticResource MaterialDesignExpander}"
+                                    Focusable="False"
                     >
                             <StackPanel>
                                 <RadioButton    x:Name="EmeraldMaterialRadioButton"
                                                 Checked="EmeraldMaterialRadioButton_Checked"
+                                                Focusable="False"
                                                 >Изумруд</RadioButton>
                                 <RadioButton    x:Name="ObsidianMaterialRadioButton"
                                                 Checked="ObsidianMaterialRadioButton_Checked"
+                                                Focusable="False"
                                                 >Обсидиан</RadioButton>
                                 <RadioButton    x:Name="GoldMaterialRadioButton"
                                                 Checked="GoldMaterialRadioButton_Checked"
+                                                Focusable="False"
                                                 >Золото</RadioButton>
                                 <RadioButton    x:Name="WhitePlasticMaterialRadioButton"
                                                 Checked="WhitePlasticMaterialRadioButton_Checked"
+                                                Focusable="False"
                                                 >Белый пластик</RadioButton>
                                 <RadioButton    x:Name="RedPlasticMaterialRadioButton"
                                                 Checked="RedPlasticMaterialRadioButton_Checked"
+                                                Focusable="False"
                                                 >Красный пластик</RadioButton>
                             </StackPanel>
                         </Expander>
@@ -301,13 +331,16 @@
                                     Margin="0, 0, 10, 10"
                                     Width="Auto"
                                     Style="{StaticResource MaterialDesignExpander}"
+                                    Focusable="False"
                     >
                             <StackPanel>
                                 <RadioButton    x:Name="FirstTextureRadioButton"
                                                 Checked="FirstTextureRadioButton_Checked"
+                                                Focusable="False"
                                                 >1</RadioButton>
                                 <RadioButton    x:Name="SecondTextureRadioButton"
                                                 Checked="SecondTextureRadioButton_Checked"
+                                                Focusable="False"
                                                 >2</RadioButton>                                
                             </StackPanel>
                         </Expander>

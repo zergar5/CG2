@@ -91,7 +91,7 @@ public class FigureBuilder
         _normals[^1] = new Vector3[1];
         vector01 = _sections[^1][1] - _sections[^1][0];
         vector02 = _sections[^1][2] - _sections[^1][0];
-        _normals[^1][0] = -Vector3.Normalize(Vector3.Cross(vector01, vector02));
+        _normals[^1][0] = Vector3.Normalize(-Vector3.Cross(vector01, vector02));
 
         _smoothNormals = new Vector3[_sections.Length][];
         _smoothNormals[0] = new Vector3[_sections[0].Count];
