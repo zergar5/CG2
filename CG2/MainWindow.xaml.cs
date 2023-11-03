@@ -115,18 +115,6 @@ public partial class MainWindow : Window
             _figure.Draw(_gl, _textureMode, _smooth);
         }
 
-        if (_showNormals)
-        {
-            _figure.DrawNormals(_gl, _smooth);
-        }
-
-        _gl.Flush();
-    }
-
-    private void OpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
-    {
-        _gl = args.OpenGL;
-
         _gl.Enable(OpenGL.GL_DEPTH_TEST);
         BufferStockCheckBox.IsChecked = true;
 
@@ -199,9 +187,6 @@ public partial class MainWindow : Window
         {
             _camera.Rotate(currentPosition, _previousPosition);
         }
-
-        _previousPosition = currentPosition;
-    }
 
     private void SetOrthographicProjection(OpenGL gl)
     {
@@ -469,5 +454,15 @@ public partial class MainWindow : Window
         _texture.Bind(_gl);
 
         _textureMode = true;
+    }
+
+    private void NoMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void NoTextureRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
     }
 }
