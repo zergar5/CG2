@@ -6,10 +6,13 @@ using SharpGL;
 using SharpGL.SceneGraph.Assets;
 using SharpGL.WPF;
 using System.Drawing;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using CG2.IO;
 using Point = System.Windows.Point;
 
 namespace CG2;
@@ -19,7 +22,8 @@ public partial class MainWindow : Window
     private OpenGL _gl;
     private readonly Camera _camera;
     private readonly FigureBuilder _figureBuilder;
-    private Figure _figure;
+    private readonly FigureIO _figureI = new();
+    private Figure? _figure;
     private Vector2[] _section;
     private Vector3[] _path;
     private Vector2[] _scales;
@@ -41,19 +45,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        _section = new Vector2[]
-        {
-            new(-0.2f, -0.2f), new(0.2f, -0.2f), new(0, 1)
-            //new(-0.1f, -0.3f), new(0.2f, -0.3f), new(0.2f, -0.15f), new(0.1f, -0.15f), new(0.1f, 0.15f), new(0.2f, 0.15f), new(0.2f, 0.3f), new(-0.1f, 0.3f)
-        };
-        _path = new Vector3[]
-        {
-            new(0, 0, 0), new(1, 0, 0), new(2, 1, 0)
-        };
-        _scales = new Vector2[]
-        {
-            new(1f, 1f), new(1f, 1f), new(1f, 1f)
-        };
         GlWindow.FrameRate = 60;
         _camera = new Camera();
         _figureBuilder = new FigureBuilder(new Mapper2D());
@@ -104,33 +95,41 @@ public partial class MainWindow : Window
 
         SetMaterial(_materialNumber);
 
-        _figure.DrawPath(_gl);
+        if (_figure != null)
+        {
+            _figure.DrawPath(_gl);
 
-        if (_carcassMode)
-        {
-            _figure.DrawCarcass(_gl);
+            if (_carcassMode)
+            {
+                _figure.DrawCarcass(_gl);
+            }
+            else
+            {
+                _figure.Draw(_gl, _textureMode, _smooth);
+            }
+
+            if (_showNormals)
+            {
+                _figure.DrawNormals(_gl, _smooth);
+            }
         }
-        else
-        {
-            _figure.Draw(_gl, _textureMode, _smooth);
-        }
+
+        _gl.Flush();
+    }
+
+    private void OpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
+    {
+        _gl = args.OpenGL;
 
         _gl.Enable(OpenGL.GL_DEPTH_TEST);
         BufferStockCheckBox.IsChecked = true;
 
         _gl.Disable(OpenGL.GL_DOUBLEBUFFER);
 
-        //_gl.Enable(OpenGL.GL_COLOR_MATERIAL);
-
         SetPerspectiveProjection(_gl);
         PerspectiveProjectionCheckBox.IsChecked = true;
 
         InitLights();
-
-        _figure = _figureBuilder
-            .CalculateSections(_section, _path, _scales)
-            .CalculateNormals()
-            .Build();
     }
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
@@ -188,6 +187,9 @@ public partial class MainWindow : Window
             _camera.Rotate(currentPosition, _previousPosition);
         }
 
+        _previousPosition = currentPosition;
+    }
+
     private void SetOrthographicProjection(OpenGL gl)
     {
         gl.MatrixMode(OpenGL.GL_PROJECTION);
@@ -238,7 +240,14 @@ public partial class MainWindow : Window
 
     private void SetMaterial(int number)
     {
-        if (number == 1)
+        if (number == 0)
+        {
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.2f, 0.2f, 0.2f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.8f, 0.8f, 0.8f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SPECULAR, new[] { 0f, 0f, 0f });
+            _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_SHININESS, 0f);
+        }
+        else if (number == 1)
         {
             _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT, new[] { 0.0215f, 0.1745f, 0.0215f });
             _gl.Material(OpenGL.GL_FRONT, OpenGL.GL_DIFFUSE, new[] { 0.0756f, 0.6142f, 0.0756f });
@@ -339,17 +348,27 @@ public partial class MainWindow : Window
 
     private void OpenFileDialogButton_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new Microsoft.Win32.OpenFileDialog();
-        dialog.FileName = "Document";
-        dialog.DefaultExt = ".txt";
-        dialog.Filter = "Text documents (.txt)|*.txt";
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            FileName = "Document",
+            DefaultExt = ".txt",
+            Filter = "Text documents (.txt) | *.txt"
+        };
 
-        bool? result = dialog.ShowDialog();
+        var result = dialog.ShowDialog();
 
         if (result == true)
         {
-            string filename = dialog.FileName;
+            var filePath = dialog.FileName;
+            var filename = filePath.Split("\\")[^1];
             FileNameText.Text = filename;
+
+            _figureI.Read(filePath, out _section, out _path, out _scales);
+
+            _figure = _figureBuilder
+                .CalculateSections(_section, _path, _scales)
+                .CalculateNormals()
+                .Build();
         }
     }
 
@@ -458,11 +477,12 @@ public partial class MainWindow : Window
 
     private void NoMaterialRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-
+        _materialNumber = 0;
     }
 
     private void NoTextureRadioButton_Checked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Disable(OpenGL.GL_TEXTURE_2D);
+        _textureMode = false;
     }
 }

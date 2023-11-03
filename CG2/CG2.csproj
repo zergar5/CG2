@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="MainWindow.xaml~RF163f310e.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="SharpGL.WPF" Version="3.1.1" />
   </ItemGroup>
@@ -15,6 +19,7 @@
   <ItemGroup>
     <Folder Include="Geometry\" />
     <Folder Include="Extensions\" />
+    <Folder Include="IO\" />
   </ItemGroup>
 
 </Project>
